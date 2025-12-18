@@ -1,4 +1,4 @@
-/* 1. 기본 설정 */
+/* 기본 초기화 */
 body {
   background-color: white;
   color: black;
@@ -12,7 +12,7 @@ body {
   flex-direction: column;
 }
 
-/* 2. 상단 영역 (시계, 돌아가기) */
+/* 상단 영역 */
 .header-area {
   display: flex;
   justify-content: flex-end;
@@ -28,23 +28,29 @@ body {
   gap: 4px;
 }
 
-.icon-button {
+.clock-btn {
   background: none;
   border: none;
   outline: none;
   padding: 0;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.icon-button img {
-  width: 100%;
-  height: 100%;
+/* 시계 기본색 필터: #96D174 */
+.clock-btn img {
+  width: 32px;
+  height: 32px;
   object-fit: contain;
+  transition: filter 0.3s ease;
+  filter: invert(85%) sepia(9%) saturate(1814%) hue-rotate(54deg) brightness(96%) contrast(86%);
+}
+
+/* 시계 호버색 필터: #5D8546 */
+.clock-btn:hover img {
+  filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%);
 }
 
 .back-text {
@@ -53,7 +59,7 @@ body {
   color: #333;
 }
 
-/* 3. 프로필 섹션 */
+/* 프로필 섹션 */
 .profile-section {
   display: flex;
   justify-content: center;
@@ -98,25 +104,33 @@ body {
   margin-bottom: 85px; 
 }
 
+/* 프로필 편집 버튼: 평소 초록색, 글자 흰색 */
 .edit-profile-btn {
   width: 400px;
   height: 64px;
-  background: #FFF;
+  background: #96D174;
   border-radius: 20px;
-  border: none;
+  border: 1px solid #96D174;
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: #FFFFFF;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: -2px -2px 1px 1px rgba(0, 0, 0, 0.05), 
-               2px 2px 2px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   margin-bottom: 35px; 
+  transition: all 0.3s ease;
 }
 
-/* 4. 토글 바 영역 */
+/* 프로필 편집 버튼 호버: 흰색 배경 */
+.edit-profile-btn:hover {
+  background-color: #FFFFFF;
+  color: #333333;
+  border: 1px solid #DCDCDC;
+}
+
+/* 토글바 기본 배경 (비공개) */
 .toggle-bar {
   width: 620px;
   height: 76px;
@@ -127,125 +141,44 @@ body {
   align-items: center;
   padding: 0 25px;
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
-.toggle-content-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+/* 🟢 공개 시 토글바 배경색: #EFF8EA */
+.toggle-bar.is-public {
+  background-color: #EFF8EA;
 }
 
-.toggle-icon-img {
-  width: 20px;
-  height: 17.993px;
-  object-fit: contain;
+.toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
+
+.toggle-icon-img { 
+  width: 20px; 
+  height: 17.993px; 
+  object-fit: contain; 
 }
 
-.toggle-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* 🟢 뜬 눈 아이콘 색상 필터: #B2ACAC */
+.eye-open-light {
+  filter: invert(75%) sepia(3%) saturate(146%) hue-rotate(314deg) brightness(91%) contrast(85%);
 }
 
-.toggle-title {
-  margin: 0;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-}
+.toggle-text { display: flex; flex-direction: column; gap: 4px; }
+.toggle-title { margin: 0; font-size: 15px; font-weight: bold; color: #333; }
+.toggle-subtitle { margin: 0; font-size: 11px; color: #888; }
 
-.toggle-subtitle {
-  margin: 0;
-  font-size: 11px;
-  color: #888;
-}
+/* 토글 스위치 슬라이더 */
+.toggle-switch-container { position: relative; display: inline-block; width: 46px; height: 24px; }
+.toggle-switch-container input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
 
-/* 슬라이드 토글 버튼 */
-.toggle-switch-container {
-  position: relative;
-  display: inline-block;
-  width: 46px;
-  height: 24px;
-}
+input:checked + .slider { background-color: #96D174; }
+input:checked + .slider:before { transform: translateX(22px); }
 
-.toggle-switch-container input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .3s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .3s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #76B852;
-}
-
-input:checked + .slider:before {
-  transform: translateX(22px);
-}
-
-/* 5. 하단 대칭 영역 (완벽 대칭 설정) */
-.section-divider-container {
-  margin-top: 99px;
-  width: 100%;
-}
-
-.gray-line {
-  width: 100%; 
-  height: 1px;
-  background: #DCDCDC;
-  border: none;
-  margin: 0;
-}
-
-.bottom-content-area {
-  display: flex;
-  width: 100%;
-  min-height: 1117px;
-  background: #FFF;
-  padding-top: 44px;
-  box-sizing: border-box;
-}
-
-.study-section {
-  flex: 1; /* 5:5 분할 */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 내부 요소 중앙 정렬 */
-}
-
-.section-title {
-  color: #000;
-  font-family: 'Pretendard', sans-serif;
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 35px; /* 타이틀과 카드 사이 여백 */
-  white-space: nowrap;
-}
-
-.record-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  align-items: center;
-}
+/* 하단 카드 리스트 영역 */
+.section-divider-container { margin-top: 99px; width: 100%; }
+.gray-line { width: 100%; height: 1px; background: #DCDCDC; border: none; margin: 0; }
+.bottom-content-area { display: flex; width: 100%; min-height: 1117px; background: #FFF; padding-top: 44px; box-sizing: border-box; }
+.study-section { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.section-title { font-size: 24px; font-weight: 500; margin-bottom: 35px; }
+.record-list { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; }
