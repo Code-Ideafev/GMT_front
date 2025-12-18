@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import './Login.css';
-import logo from '../assets/images/logo.svg';
-import PasswordField from './PasswordField';
-import SignupForm from './SignupForm';
+import logo from '../assets/images/logo.svg'; 
+import PasswordField from '../components/PasswordField'; 
+import SignupForm from './Singupfrom.jsx';
 import ResetPasswordForm from './ResetPasswordForm';
 
 export default function Login() {
   const [view, setView] = useState('login');
 
   return (
-    <div className="container">
-      {/* 1. 로그인 메인 */}
+    <div className="container"> 
       {view === 'login' && (
         <div id="loginContainer">
           <img src={logo} className="logo" alt="logo" />
@@ -26,10 +25,7 @@ export default function Login() {
         </div>
       )}
 
-      {/* 2. 회원가입 컴포넌트 호출 */}
       {view === 'signup' && <SignupForm onBack={() => setView('login')} />}
-
-      {/* 3. 비밀번호 재설정 컴포넌트 호출 */}
       {view === 'reset' && <ResetPasswordForm onBack={() => setView('login')} />}
     </div>
   );
