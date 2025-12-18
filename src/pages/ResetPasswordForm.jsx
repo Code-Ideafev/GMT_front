@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import EmailStep from './EmailStep';
 import VerifyStep from './VerifyStep';
 import NewPasswordStep from './NewPasswordStep';
-import './ResetPassword.css'; // 전용 CSS 연결
+import './ResetPassword.css';
 
 export default function ResetPasswordForm({ onBack }) {
   const [step, setStep] = useState(1);
@@ -37,6 +37,7 @@ export default function ResetPasswordForm({ onBack }) {
       <div className="welcome-text">비밀번호 재설정</div>
 
       {step === 1 && <EmailStep email={email} setEmail={setEmail} onNext={handleSendCode} />}
+      
       {step === 2 && (
         <VerifyStep 
           authCode={authCode} setAuthCode={setAuthCode} 
@@ -45,9 +46,9 @@ export default function ResetPasswordForm({ onBack }) {
           onResend={() => setTimeLeft(180)} 
         />
       )}
+      
       {step === 3 && <NewPasswordStep onFinish={() => { alert('변경 완료!'); onBack(); }} />}
 
-      {step < 3 && <div className="back-to-login" onClick={onBack}>로그인으로 돌아가기</div>}
     </div>
   );
 }
