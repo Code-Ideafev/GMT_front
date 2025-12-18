@@ -94,7 +94,7 @@ export default function Login() {
         </form>
       </div>
 
-      {/* 비밀번호 재설정 */}
+      {/* 비밀번호 재설정
       <div className="container hidden" id="resetPasswordContainer">
         <form className="login-box">
           <div className="welcome-text">새 비밀번호 설정</div>
@@ -116,3 +116,4 @@ export default function Login() {
     </>
   );
 }
+  */} </>)}

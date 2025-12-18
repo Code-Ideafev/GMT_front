@@ -152,9 +152,10 @@ button {
   color: red;
 }
 
-/* =========================
-   비밀번호 재설정
-========================= */
+/*
+
+비밀번호 재설정
+
 #resetPasswordContainer input {
   width: 360px;
   height: 57px;
@@ -177,3 +178,4 @@ button {
   font-size: 13px;
   color: red;
 }
+*/
