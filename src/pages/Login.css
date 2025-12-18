@@ -107,6 +107,7 @@ button {
 /* =========================
    회원가입
 ========================= */
+
 #signupContainer {
   padding: 20px 40px;
   border-radius: 20px;
@@ -126,17 +127,21 @@ button {
 
 .select-group {
   display: flex;
-  gap: 4%;
+  gap: 10px;
+  width: 360px;
   margin-bottom: 17px;
 }
 
 #signupForm select {
-  width: 100%;
+  flex: 1;
   height: 57px;
-  padding: 17px;
+  padding: 0 17px;
   border: 0.3px solid #ababab;
   border-radius: 9px;
   background-color: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #222;
   cursor: pointer;
 }
 
@@ -152,8 +157,10 @@ button {
   color: red;
 }
 
-/*
-비밀번호 재설정
+
+/* =========================
+   비밀번호 재설정
+========================= */
 
 #resetPasswordContainer input {
   width: 360px;
@@ -177,4 +184,3 @@ button {
   font-size: 13px;
   color: red;
 }
-*/
