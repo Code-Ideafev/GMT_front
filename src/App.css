@@ -36,7 +36,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: -500px;
 }
 
 .time-number-text {
@@ -44,8 +44,9 @@
   font-weight: 800;
   font-size: 45px;
   line-height: 100%;
-  color: #7DBA7D;
+  color: #66A841;
   width: 297px;
   height: 87px;
   text-align: center;
+  margin-top: -100px;
 }
