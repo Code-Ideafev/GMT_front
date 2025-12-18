@@ -1,0 +1,32 @@
+.study-record-card {
+  width: 660px;
+  height: 100px;
+  border-radius: 12px;
+  border: 0.4px solid #000;
+  background: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 35px;
+  box-sizing: border-box;
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.card-right {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.record-time, .record-date {
+  color: #000;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: normal;
+}
