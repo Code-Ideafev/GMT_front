@@ -1,26 +1,22 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Timer from "./timer/timer.jsx";
+import Timer from './Timer/Timer.jsx';
+import logo from './assets/img/ccd5aa1de7d311728c1c9d56de3c9eebf4eb872a.png';
 
-function App(){
-  const [showTimer,setShowTimer] = useState(false);
 
+
+function App() {
   return (
-    <div>
-
-     <img src="/ccd5aa1de7d311728c1c9d56de3c9eebf4eb872a.png" alt="이미지"/>
-      <h1>GMT Timer</h1>
-    {showTimer && <timer />}
-    <button
-     onClick={()=>{
-      setShowTimer(!showTimer);
-     }}
-      > 
-      Toolgle Button
-      </button>  
+    <div style={{ position: 'relative', height: '100vh', padding: '20px' }}>
+      <img 
+        src={logo} 
+        alt="GMT Logo" 
+        style={{ position: 'absolute', top: '20px', left: '20px', width: '100px' }}
+      />
+      
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Timer />
       </div>
-  )
+    </div>
+  );
 }
 
 export default App;
