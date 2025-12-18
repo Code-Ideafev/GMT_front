@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import '../Login.css';
+import './Login.css';
 
 import logo from '../assets/images/logo.svg';
 import eye from '../assets/images/eye.svg';
