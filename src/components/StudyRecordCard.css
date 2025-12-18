@@ -7,20 +7,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 35px;
+  padding: 0 35px; /* 내부 좌우 여백 */
   box-sizing: border-box;
 }
 
 .card-left {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 30px; /* 회색 원과 이름 원들 사이 간격 */
 }
 
 .card-right {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 50px; /* 시간과 날짜 사이 간격 */
 }
 
 .record-time, .record-date {

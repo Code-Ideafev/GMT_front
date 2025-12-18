@@ -1,4 +1,7 @@
+import React from "react";
 import "./my-page.css";
+// 상위 폴더인 components에서 가져오도록 경로 설정
+import StudyRecordCard from "../components/StudyRecordCard";
 import clockIcon from "./Vector.svg";
 import cameraIcon from "./Camera.svg";
 import groupIcon from "./Group.svg";
@@ -8,7 +11,7 @@ export default function MyPage() {
 
   return (
     <div className="mypage-container">
-      {/* 1. 상단 영역 */}
+      {/* 1. 상단 영역 (시계 아이콘 및 돌아가기) */}
       <div className="header-area">
         <div className="icon-wrapper">
           <button className="icon-button">
@@ -30,6 +33,7 @@ export default function MyPage() {
               <span className="user-name">{userName}</span>
             </div>
             <button className="edit-profile-btn">프로필 편집</button>
+            
             <div className="toggle-bar">
               <div className="toggle-content-wrapper">
                 <img src={groupIcon} alt="visibility icon" className="toggle-icon-img" />
@@ -52,14 +56,26 @@ export default function MyPage() {
         <hr className="gray-line" />
         <div className="bottom-content-area">
           
+          {/* 왼쪽 영역: 내 누적 공부시간 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
-            {/* 여기에 카드가 추가될 예정입니다 */}
+            <div className="record-list">
+              {/* 컴포넌트 적용 부분 */}
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+            </div>
           </div>
 
+          {/* 오른쪽 영역: 전체 공부시간 */}
           <div className="study-section">
             <h2 className="section-title">전체 공부시간</h2>
-            {/* 여기에 카드가 추가될 예정입니다 */}
+            <div className="record-list">
+              {/* 컴포넌트 적용 부분 */}
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard time="3 : 40 : 03" date="2025.09.04" />
+            </div>
           </div>
 
         </div>

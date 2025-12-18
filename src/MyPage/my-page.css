@@ -1,9 +1,9 @@
-/* 기본 설정 */
+/* 1. 기본 설정 */
 body {
   background-color: white;
   color: black;
   margin: 0;
-  overflow-x: hidden; /* 가로 선 1728px로 인한 스크롤 방지 */
+  overflow-x: hidden;
 }
 
 .mypage-container {
@@ -12,7 +12,7 @@ body {
   flex-direction: column;
 }
 
-/* --- 상단 영역 (시계, 돌아가기) --- */
+/* 2. 상단 영역 (시계, 돌아가기) */
 .header-area {
   display: flex;
   justify-content: flex-end;
@@ -53,7 +53,7 @@ body {
   color: #333;
 }
 
-/* --- 프로필 섹션 --- */
+/* 3. 프로필 섹션 */
 .profile-section {
   display: flex;
   justify-content: center;
@@ -91,8 +91,6 @@ body {
 }
 
 .user-name {
-  width: 120px;
-  height: 31px;
   font-size: 24px;
   font-weight: bold;
   display: flex;
@@ -113,11 +111,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: -2px -2px 1px 1px rgba(0, 0, 0, 0.10), 
-               2px 2px 2px 1px rgba(0, 0, 0, 0.10);
+  box-shadow: -2px -2px 1px 1px rgba(0, 0, 0, 0.05), 
+               2px 2px 2px 1px rgba(0, 0, 0, 0.05);
   margin-bottom: 35px; 
 }
 
+/* 4. 토글 바 영역 */
 .toggle-bar {
   width: 620px;
   height: 76px;
@@ -204,20 +203,7 @@ input:checked + .slider:before {
   transform: translateX(22px);
 }
 
-/* --- 하단 대칭 영역 --- */
-.section-divider-container {
-  margin-top: 99px;
-  width: 100%;
-}
-
-.gray-line {
-  width: 1728px; /* 지정하신 너비 */
-  height: 1px;
-  background: #DCDCDC;
-  border: none;
-  margin: 0;
-}
-/* --- 하단 대칭 영역 수정 --- */
+/* 5. 하단 대칭 영역 (완벽 대칭 설정) */
 .section-divider-container {
   margin-top: 99px;
   width: 100%;
@@ -232,19 +218,19 @@ input:checked + .slider:before {
 }
 
 .bottom-content-area {
-  display: flex; /* 가로 배치 */
-  width: 100%;   /* 전체 너비 사용 */
+  display: flex;
+  width: 100%;
   min-height: 1117px;
   background: #FFF;
-  padding-top: 44px; /* 상단 여백 44px */
+  padding-top: 44px;
   box-sizing: border-box;
 }
 
 .study-section {
-  flex: 1; /* 🟢 중요: 왼쪽과 오른쪽 구역을 정확히 5:5 비율로 나눔 */
+  flex: 1; /* 5:5 분할 */
   display: flex;
   flex-direction: column;
-  align-items: center; /* 🟢 중요: 구역 내에서 타이틀과 카드를 정중앙 정렬 */
+  align-items: center; /* 내부 요소 중앙 정렬 */
 }
 
 .section-title {
@@ -252,32 +238,14 @@ input:checked + .slider:before {
   font-family: 'Pretendard', sans-serif;
   font-size: 24px;
   font-weight: 500;
-  margin: 0;
-  margin-bottom: 35px; /* 🟢 타이틀 아래 여백 35px 고정 */
-  text-align: center;
+  margin-bottom: 35px; /* 타이틀과 카드 사이 여백 */
+  white-space: nowrap;
 }
 
 .record-list {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 카드 사이 간격 */
+  gap: 20px;
   width: 100%;
-  align-items: center; /* 카드들도 섹션 중앙에 배치 */
-}
-
-.study-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 타이틀 중앙 정렬 */
-}
-
-.section-title {
-  color: #000;
-  font-family: 'Pretendard', sans-serif;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  margin: 0;
-  white-space: nowrap;
+  align-items: center;
 }
