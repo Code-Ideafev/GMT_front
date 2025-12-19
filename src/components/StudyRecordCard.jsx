@@ -1,5 +1,7 @@
 import React from "react";
 import "./StudyRecordCard.css";
+// 경로를 components 폴더 기준으로 MyPage 폴더를 찾아가도록 수정했습니다.
+import defaultProfile from "../MyPage/Group 92.svg"; 
 
 export default function StudyRecordCard({ 
   time = "0 : 00 : 00", 
@@ -16,13 +18,13 @@ export default function StudyRecordCard({
     <>
       {!isEditMode ? (
         <div className="record-card">
-          {/* 가로 정렬을 위한 왼쪽 섹션 */}
           <div className="card-left-section" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <div className="user-profile-circle" style={{ overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
-              {/* 내 기록이고 저장된 사진이 있으면 표시 */}
-              {isMine && mySavedImage ? (
-                <img src={mySavedImage} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : null}
+            <div className="user-profile-circle" style={{ overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, backgroundColor: '#D9D9D9' }}>
+              {isMine ? (
+                <img src={mySavedImage || defaultProfile} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', backgroundColor: '#D9D9D9' }} />
+              )}
             </div> 
             <span className="user-record-name" style={{ whiteSpace: 'nowrap' }}>{userName}</span>
           </div>
@@ -33,7 +35,6 @@ export default function StudyRecordCard({
           </div>
         </div>
       ) : (
-        /* 편집 모드 내부 레이아웃 */
         <div className="edit-section-wrapper">
           <h2 className="edit-photo-title">사진 편집</h2>
           <div className="edit-button-group">
