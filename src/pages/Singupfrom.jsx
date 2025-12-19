@@ -9,8 +9,8 @@ export default function SingupForm({ onBack }) {
       <form className="login-box" id="signupForm" onSubmit={(e) => e.preventDefault()}>
         <div className="welcome-text">환영해요!</div>
         
-        <input placeholder="이름" />
-        <input placeholder="이메일" />
+        <Input placeholder="이름" />
+        <Input placeholder="이메일" />
 
         {/* 3. CSS의 .select-group 스타일 (gap: 4% 등) 적용 */}
         <div className="select-group">

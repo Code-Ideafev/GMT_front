@@ -8,7 +8,7 @@ export default function PasswordField({ id, placeholder }) {
   return (
     <div className="password-field">
       {/* 원래 <input> 대신 대문자 <Input>을 씁니다 */}
-      <input 
+      <Input 
         type={show ? 'text' : 'password'} 
         id={id} 
         placeholder={placeholder} 
