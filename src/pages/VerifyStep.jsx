@@ -5,7 +5,7 @@ export default function VerifyStep({ authCode, setAuthCode, timeLeft, formatTime
     <form className="login-box" onSubmit={onNext}>
       <div className="info-text">이메일로 전송된 번호를 입력해주세요.</div>
       <div className="input-wrapper">
-        <input 
+        <Input 
           type="text" 
           placeholder="인증번호 6자리" 
           value={authCode}

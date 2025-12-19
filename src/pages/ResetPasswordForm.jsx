@@ -3,6 +3,7 @@ import EmailStep from './EmailStep';
 import VerifyStep from './VerifyStep';
 import NewPasswordStep from './NewPasswordStep';
 import './ResetPassword.css';
+import Input from '../components/Inputtype';
 
 export default function ResetPasswordForm({ onBack }) {
   const [step, setStep] = useState(1);
