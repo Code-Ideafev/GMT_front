@@ -1,5 +1,5 @@
 import PasswordField from '../components/PasswordField';
-import Input from '../components/Input';
+import Input from '../components/Inputtype';
 
 export default function SingupForm({ onBack }) {
   return (

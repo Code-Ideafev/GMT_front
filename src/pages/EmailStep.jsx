@@ -1,4 +1,4 @@
-import Input from './components/Input'; // 👈 여기도 추가!
+import Input from "../components/Inputtype";
 
 export default function EmailStep({ email, setEmail, onNext }) {
   return (

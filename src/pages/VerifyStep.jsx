@@ -1,4 +1,4 @@
-import Input from '../components/Input';
+import Input from '../components/Inputtype';
 
 export default function VerifyStep({ authCode, setAuthCode, timeLeft, formatTime, onNext, onResend }) {
   return (
