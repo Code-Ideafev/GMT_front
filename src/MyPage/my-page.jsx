@@ -23,7 +23,6 @@ export default function MyPage() {
     <div className="mypage-container">
       <div className="header-area">
         <div className="icon-wrapper">
-          {/* 시계 아이콘 영역 수정 */}
           <button className="clock-btn">
             <div className="icon-stack">
               <img src={clockIcon} alt="history" className="clock-img base" />
@@ -45,9 +44,19 @@ export default function MyPage() {
             <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
-                <img src={isPublic ? groupOpenIcon : groupIcon} alt="eye" className="toggle-icon-img" />
+                {/* 🟢 아이콘 클래스 추가: 색상 통일을 위함 */}
+                <img 
+                  src={isPublic ? groupOpenIcon : groupIcon} 
+                  alt="eye" 
+                  className="toggle-icon-img grey-icon" 
+                />
                 <div className="toggle-text">
-                  <p className="toggle-title">{isPublic ? "공부 시간 공개" : "공부 시간 비공개"}</p>
+                  <p className="toggle-title">공부 시간 공개</p>
+                  <p className="toggle-desc">
+                    {isPublic 
+                      ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" 
+                      : "공부 시간이 비공개로 설정되어 있습니다"}
+                  </p>
                 </div>
               </div>
               <label className="toggle-switch-container">
@@ -68,17 +77,21 @@ export default function MyPage() {
               <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
               <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
               <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
             </div>
           </div>
 
           <div className="study-section">
-            <h2 className="section-title">전체 공부시간 (랭킹)</h2>
+            <h2 className="section-title">랭킹</h2>
             <div className="record-list">
               <StudyRecordCard isMine={false} userName="이준호" time="10 : 00 : 00" date="2025.09.04" />
               {isPublic && (
                 <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
               )}
               <StudyRecordCard isMine={false} userName="박지민" time="2 : 50 : 00" date="2025.09.04" />
+              <StudyRecordCard isMine={false} userName="최수아" time="2 : 10 : 00" date="2025.09.04" />
+              <StudyRecordCard isMine={false} userName="강민준" time="1 : 40 : 00" date="2025.09.04" />
             </div>
           </div>
         </div>
