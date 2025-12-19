@@ -57,12 +57,12 @@ export default function Timer() {
       <main className="timer-main-content" style={{ paddingTop: '100px' }}> 
         <div style={{ position: 'relative', width: '350px', height: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <svg width="350" height="350" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
-            <circle cx="175" cy="175" r="160" fill="transparent" stroke="#E8F5E8" strokeWidth="4" />
+            <circle cx="175" cy="175" r="160" fill="transparent" stroke="#E8F5E8" strokeWidth="2" />
             <circle
               cx="175" cy="175" r="160"
               fill="transparent"
-              stroke="#7DBA7D"
-              strokeWidth="6" 
+              stroke="#A8E386"
+              strokeWidth="3" 
               strokeDasharray={dashArray}
               strokeDashoffset={dashOffset}
               strokeLinecap="round"
@@ -87,13 +87,16 @@ export default function Timer() {
             }} />
           </div>
 
-          <div style={{
-            fontFamily: "'Nunito', sans-serif",
-            fontWeight: '800',
-            fontSize: '54px',
-            color: '#7DBA7D',
-            zIndex: 10
-          }}>
+         <div style={{
+  color: '#66A841',                       // 따옴표 추가
+  textShadow: '0 4px 4px rgba(167, 199, 132, 0.25)', // 카멜케이스(textShadow)로 변경
+  fontFamily: 'Nunito, sans-serif',       // 폰트명 따옴표 추가
+  fontSize: '64px',
+  fontStyle: 'normal',
+  fontWeight: '800',                      // 숫자가 굵으면 투박할 수 있으니 500~600도 시도해보세요!
+  lineHeight: 'normal',
+  fontVariantNumeric: 'tabular-nums'      // 숫자가 바뀔 때 흔들리지 않게 고정해주는 마법의 코드
+}}>
             {formatTime(sec)}
           </div>
         </div>
