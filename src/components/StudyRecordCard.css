@@ -63,7 +63,7 @@
 .edit-button-group {
   display: flex;
   gap: 20px;
-  margin-bottom: 12px; 
+  margin-bottom: 32px; 
   justify-content: center;
 }
 
