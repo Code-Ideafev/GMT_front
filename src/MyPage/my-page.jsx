@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./my-page.css";
 import StudyRecordCard from "../components/StudyRecordCard";
 import clockIcon from "./Vector.svg";
-import cameraIcon from "./Camera.svg";
 import groupIcon from "./Group.svg";       
 import groupOpenIcon from "./Group 67.svg"; 
 import defaultProfile from "./Group 92.svg"; 
@@ -22,7 +21,7 @@ export default function MyPage() {
   return (
     <div className="mypage-container">
       <div className="header-area">
-        <div className="icon-wrapper">
+        <div className="icon-wrapper" onClick={() => navigate(-1)}>
           <button className="clock-btn">
             <div className="icon-stack">
               <img src={clockIcon} alt="history" className="clock-img base" />
@@ -35,7 +34,7 @@ export default function MyPage() {
 
       <div className="profile-section">
         <div className="profile-content">
-          <div className="profile-image-circle" style={{ overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="profile-image-circle">
             <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
@@ -44,18 +43,11 @@ export default function MyPage() {
             <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
-                {/* 🟢 아이콘 클래스 추가: 색상 통일을 위함 */}
-                <img 
-                  src={isPublic ? groupOpenIcon : groupIcon} 
-                  alt="eye" 
-                  className="toggle-icon-img grey-icon" 
-                />
+                <img src={isPublic ? groupOpenIcon : groupIcon} alt="eye" className="toggle-icon-img grey-icon" />
                 <div className="toggle-text">
-                  <p className="toggle-title">공부 시간 공개</p>
+                  <p className="toggle-title">공부 시간 {isPublic ? "공개" : "비공개"}</p>
                   <p className="toggle-desc">
-                    {isPublic 
-                      ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" 
-                      : "공부 시간이 비공개로 설정되어 있습니다"}
+                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "공부 시간이 비공개로 설정되어 있습니다"}
                   </p>
                 </div>
               </div>
@@ -74,24 +66,19 @@ export default function MyPage() {
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
+              <StudyRecordCard userName={userName} time="3 : 40 : 03" date="2025.09.04" isMine={true} />
+              <StudyRecordCard userName={userName} time="2 : 15 : 10" date="2025.09.03" isMine={true} />
             </div>
           </div>
-
+          
           <div className="study-section">
             <h2 className="section-title">랭킹</h2>
             <div className="record-list">
-              <StudyRecordCard isMine={false} userName="이준호" time="10 : 00 : 00" date="2025.09.04" />
               {isPublic && (
-                <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
+                <StudyRecordCard userName={userName} time="3 : 40 : 03" date="2025.09.04" isMine={true} />
               )}
-              <StudyRecordCard isMine={false} userName="박지민" time="2 : 50 : 00" date="2025.09.04" />
-              <StudyRecordCard isMine={false} userName="최수아" time="2 : 10 : 00" date="2025.09.04" />
-              <StudyRecordCard isMine={false} userName="강민준" time="1 : 40 : 00" date="2025.09.04" />
+              <StudyRecordCard userName="이준호" time="10 : 00 : 00" date="2025.09.04" />
+              <StudyRecordCard userName="박지민" time="08 : 30 : 00" date="2025.09.04" />
             </div>
           </div>
         </div>

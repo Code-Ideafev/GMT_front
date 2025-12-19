@@ -1,6 +1,5 @@
 import React from "react";
 import "./StudyRecordCard.css";
-// 경로를 components 폴더 기준으로 MyPage 폴더를 찾아가도록 수정했습니다.
 import defaultProfile from "../MyPage/Group 92.svg"; 
 
 export default function StudyRecordCard({ 
@@ -17,24 +16,23 @@ export default function StudyRecordCard({
   return (
     <>
       {!isEditMode ? (
+        /* 일반 기록 카드 */
         <div className="record-card">
-          <div className="card-left-section" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <div className="user-profile-circle" style={{ overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, backgroundColor: '#D9D9D9' }}>
+          <div className="card-left-section">
+            <div className="user-profile-circle">
               {isMine ? (
                 <img src={mySavedImage || defaultProfile} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', backgroundColor: '#D9D9D9' }} />
               )}
             </div> 
-            <span className="user-record-name" style={{ whiteSpace: 'nowrap' }}>{userName}</span>
+            <span className="user-record-name">{userName}</span>
           </div>
-
-          <div className="card-right-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <span className="record-time">{time}</span>
-            <span className="record-date">{date}</span>
-          </div>
+          <span className="record-time">{time}</span>
+          <span className="record-date">{date}</span>
         </div>
       ) : (
+        /* 🟢 사진 편집 섹션: 이 내부 요소들이 중앙에 오도록 감싸는 구조 */
         <div className="edit-section-wrapper">
           <h2 className="edit-photo-title">사진 편집</h2>
           <div className="edit-button-group">
