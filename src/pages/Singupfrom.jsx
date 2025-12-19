@@ -9,10 +9,9 @@ export default function SingupForm({ onBack }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(true); // 기본으로 열려있게 설정
   const [isAgreed, setIsAgreed] = useState(false);
 
-  // 실시간 유효성 경고 메시지 조건
   const isEmailInvalid = email.length > 0 && !email.endsWith('@gsm.hs.kr');
   const isPasswordInvalid = password.length > 0 && !/^\d{4}$/.test(password);
   const isConfirmInvalid = confirmPassword.length > 0 && password !== confirmPassword;
@@ -20,24 +19,16 @@ export default function SingupForm({ onBack }) {
   const handleSignUp = (e) => {
     e.preventDefault();
 
-    // ⭐ 동의 안 하면 못 넘어가게 하는 핵심 기능 ⭐
     if (!isAgreed) {
       alert("개인정보 수집 및 이용에 동의해야 가입이 가능합니다.");
-      return; // 함수 종료 (가입 프로세스 중단)
+      return;
     }
 
-    // 기타 유효성 검사
     if (!name || !email || !password || !confirmPassword) {
       alert("모든 정보를 입력해주세요!");
       return;
     }
 
-    if (isEmailInvalid || isPasswordInvalid || isConfirmInvalid) {
-      alert("입력한 정보를 다시 확인해주세요.");
-      return;
-    }
-
-    // 모든 조건 통과 시
     alert("회원가입 성공!");
     onBack();
   };
@@ -69,17 +60,29 @@ export default function SingupForm({ onBack }) {
           {isConfirmInvalid && <div style={warningStyle}>비밀번호가 일치하지 않아요!</div>}
         </div>
 
+        {/* ⭐ 두 번째 사진 스타일의 개인정보 박스 ⭐ */}
         <div className="privacy-container">
           <div className="privacy-header" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}>
             <span>개인정보 수집 및 이용 안내</span>
-            {isPrivacyOpen ? <ChevronUp size={16} color="#ababab" /> : <ChevronDown size={16} color="#ababab" />}
+            {isPrivacyOpen ? <ChevronUp size={20} color="#666" /> : <ChevronDown size={20} color="#666" />}
           </div>
           
           {isPrivacyOpen && (
             <div className="privacy-content">
-              <strong>1. 수집 항목</strong>: 이름, 이메일, 학년/반, 비밀번호<br />
-              <strong>2. 수집 목적</strong>: 서비스 운영 및 본인 확인<br />
-              <strong>3. 보유 기간</strong>: 서비스 탈퇴 시까지
+              <strong>1. 수집 항목</strong><br />
+              이름, 이메일 주소, 비밀번호<br /><br />
+              
+              <strong>2. 수집 목적</strong><br />
+              • 회원 식별 및 관리<br />
+              • 서비스 제공 및 공지사항 전달<br /><br />
+              
+              <strong>3. 보유 및 이용 기간</strong><br />
+              회원 탈퇴 시까지<br />
+
+              {/* 회색 강조 박스 부분 */}
+              <div className="privacy-inner-box">
+                이용자는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있으며, 동의를 거부할 경우 회원가입이 제한될 수 있습니다.
+              </div>
             </div>
           )}
 

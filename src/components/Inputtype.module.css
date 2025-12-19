@@ -12,6 +12,6 @@
 }
 
 .customInput:focus {
-  border: 1.5px solid #575757 !important; /* !important를 붙여서 다른 CSS가 못 이기게 합니다 */
+  border: 1.5px solid #575757 !important;
   outline: none;
 }
