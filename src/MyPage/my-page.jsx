@@ -13,6 +13,14 @@ export default function MyPage() {
   const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
 
+  // 🟢 각 섹션별 노출 개수 상태
+  const [myVisibleCount, setMyVisibleCount] = useState(5);
+  const [rankVisibleCount, setRankVisibleCount] = useState(5);
+
+  // 테스트 데이터 (각 20개씩)
+  const myRecords = Array(20).fill({ userName, time: "3 : 40 : 03", date: "2025.09.04", isMine: true });
+  const rankRecords = Array(20).fill({ userName: "이준호", time: "10 : 00 : 00", date: "2025.09.04" });
+
   useEffect(() => {
     const saved = localStorage.getItem("userProfileImage");
     setProfileImage(saved);
@@ -63,24 +71,47 @@ export default function MyPage() {
       <div className="section-divider-container">
         <hr className="gray-line" />
         <div className="bottom-content-area">
+          
+          {/* 왼쪽 섹션 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
-              <StudyRecordCard userName={userName} time="3 : 40 : 03" date="2025.09.04" isMine={true} />
-              <StudyRecordCard userName={userName} time="2 : 15 : 10" date="2025.09.03" isMine={true} />
+              {myRecords.slice(0, myVisibleCount).map((item, index) => (
+                <StudyRecordCard key={index} {...item} />
+              ))}
+            </div>
+            
+            <div className="button-group">
+              {/* 더 보여줄 데이터가 있을 때만 더보기 표시 */}
+              {myVisibleCount < myRecords.length && (
+                <button className="action-btn" onClick={() => setMyVisibleCount(prev => prev + 5)}>더보기 ∨</button>
+              )}
+              {/* 초기값 5개보다 많이 펼쳐져 있을 때만 닫기 표시 */}
+              {myVisibleCount > 5 && (
+                <button className="action-btn" onClick={() => setMyVisibleCount(5)}>닫기 ∧</button>
+              )}
             </div>
           </div>
           
+          {/* 오른쪽 섹션 */}
           <div className="study-section">
             <h2 className="section-title">랭킹</h2>
             <div className="record-list">
-              {isPublic && (
-                <StudyRecordCard userName={userName} time="3 : 40 : 03" date="2025.09.04" isMine={true} />
+              {rankRecords.slice(0, rankVisibleCount).map((item, index) => (
+                <StudyRecordCard key={index} {...item} />
+              ))}
+            </div>
+            
+            <div className="button-group">
+              {rankVisibleCount < rankRecords.length && (
+                <button className="action-btn" onClick={() => setRankVisibleCount(prev => prev + 5)}>더보기 ∨</button>
               )}
-              <StudyRecordCard userName="이준호" time="10 : 00 : 00" date="2025.09.04" />
-              <StudyRecordCard userName="박지민" time="08 : 30 : 00" date="2025.09.04" />
+              {rankVisibleCount > 5 && (
+                <button className="action-btn" onClick={() => setRankVisibleCount(5)}>닫기 ∧</button>
+              )}
             </div>
           </div>
+
         </div>
       </div>
     </div>

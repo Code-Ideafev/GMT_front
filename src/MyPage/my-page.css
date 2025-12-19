@@ -6,66 +6,22 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  overflow-y: auto;
 }
 
 .header-area { display: flex; justify-content: flex-end; padding: 40px; box-sizing: border-box; }
 
-/* 🟢 아이콘+텍스트 래퍼: 호버 시 전체 색상 변경 */
-.icon-wrapper { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  gap: 4px; 
-  cursor: pointer; 
-}
-
-/* 🟢 호버 시 텍스트 색상 강제 지정 */
-.icon-wrapper:hover .back-text {
-  color: #5D8546 !important;
-}
-
-/* 🟢 호버 시 아이콘 교체 로직 */
-.icon-wrapper:hover .clock-img.base { 
-  opacity: 0 !important; 
-}
-.icon-wrapper:hover .clock-img.hover { 
-  opacity: 1 !important; 
-}
+.icon-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.icon-wrapper:hover .back-text { color: #5D8546 !important; }
+.icon-wrapper:hover .clock-img.base { opacity: 0 !important; }
+.icon-wrapper:hover .clock-img.hover { opacity: 1 !important; }
 
 .clock-btn { background: none; border: none; outline: none; padding: 0; cursor: pointer; display: flex; }
+.icon-stack { position: relative; width: 32px; height: 32px; }
+.clock-img { position: absolute; top: 0; left: 0; width: 32px; height: 32px; object-fit: contain; transition: opacity 0.3s ease; }
+.clock-img.hover { filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%) !important; opacity: 0; }
 
-/* 아이콘이 겹치도록 설정 */
-.icon-stack { 
-  position: relative; 
-  width: 32px; 
-  height: 32px; 
-}
+.back-text { font-size: 10px; font-weight: 500; color: #333; transition: color 0.3s ease; }
 
-.clock-img { 
-  position: absolute; 
-  top: 0; 
-  left: 0; 
-  width: 32px; 
-  height: 32px; 
-  object-fit: contain; 
-  transition: opacity 0.3s ease; 
-}
-
-/* 🟢 호버용 이미지에 필터 강제 적용 (#5D8546 색상) */
-.clock-img.hover { 
-  filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%) !important;
-  opacity: 0; 
-}
-
-.back-text { 
-  font-size: 10px; 
-  font-weight: 500; 
-  color: #333; 
-  transition: color 0.3s ease; 
-}
-
-/* --- 이하 프로필 및 버튼 스타일 유지 --- */
 .profile-section { display: flex; justify-content: center; width: 100%; margin-top: -40px; }
 .profile-content { display: flex; flex-direction: row; align-items: flex-end; gap: 60px; }
 .profile-image-circle { width: 328px; height: 328px; background-color: #E9E9E9; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; }
@@ -79,7 +35,6 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
 }
 .edit-profile-btn:hover { background-color: #FFFFFF; color: #333333; border: 1px solid #DCDCDC; }
 
-/* 토글바 및 기타 */
 .toggle-bar { width: 620px; height: 76px; background: #F3F3F3; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; box-sizing: border-box; transition: background-color 0.3s ease; }
 .toggle-bar.is-public { background-color: #EFF8EA; }
 .toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
@@ -102,6 +57,36 @@ input:checked + .slider:before { transform: translateX(22px); }
 .study-section { flex: 1; display: flex; flex-direction: column; align-items: center; }
 .section-title { font-size: 24px; font-weight: 500; margin-bottom: 35px; }
 
-.record-list { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; max-height: 750px; overflow-y: auto; padding-right: 15px; box-sizing: border-box; }
-.record-list::-webkit-scrollbar { width: 6px; }
-.record-list::-webkit-scrollbar-thumb { background: #DCDCDC; border-radius: 10px; }
+.record-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  width: 100%; 
+  align-items: center; 
+  height: auto;
+  overflow: visible;
+  margin-bottom: 15px;
+}
+
+/* 🟢 버튼 그룹 및 공통 버튼 스타일 */
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #8E8E8E;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  color: #5D8546;
+  text-decoration: underline;
+}
