@@ -1,39 +1,176 @@
-/* 기존 코드는 그대로 유지하고 아래 섹션만 추가/수정하세요 */
-
-.bottom-content-area { 
-  display: flex; 
-  width: 100%; 
-  max-height: 1000px; /* 섹션 전체의 최대 높이를 지정하여 페이지가 너무 길어지는 걸 막습니다 */
-  background: #FFF; 
-  padding-top: 44px; 
-  box-sizing: border-box; 
+/* 기본 초기화 */
+body {
+  background-color: white;
+  color: black;
+  margin: 0;
+  overflow-x: hidden;
 }
 
-/* 🟢 스크롤바가 생기는 영역 */
-.record-list.scroll-area { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 20px; 
-  width: 100%; 
+.mypage-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 영역 */
+.header-area {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 40px 40px; 
+  box-sizing: border-box;
+}
+
+.icon-wrapper {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  max-height: 800px; /* 카드가 보여질 영역 높이 */
-  overflow-y: auto;  /* 세로 스크롤바 활성화 */
-  padding-right: 10px; /* 스크롤바 여백 */
+  gap: 4px;
 }
 
-/* 🟢 슬라이드바(스크롤바) 커스텀 디자인 */
-.record-list.scroll-area::-webkit-scrollbar {
-  width: 8px;
+.clock-btn {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.record-list.scroll-area::-webkit-scrollbar-thumb {
-  background-color: #96D174; /* 테마 색상인 초록색으로 적용 */
+/* 시계 기본색 필터: #96D174 */
+.clock-btn img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: filter 0.3s ease;
+  filter: invert(85%) sepia(9%) saturate(1814%) hue-rotate(54deg) brightness(96%) contrast(86%);
+}
+
+/* 시계 호버색 필터: #5D8546 */
+.clock-btn:hover img {
+  filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%);
+}
+
+.back-text {
+  font-size: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 프로필 섹션 */
+.profile-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: -40px; 
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 60px;
+}
+
+.profile-image-circle {
+  width: 328px;
+  height: 328px;
+  background-color: #E9E9E9;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.camera-icon-img {
+  width: 52.48px;
+  height: 49.2px;
+  object-fit: contain;
+}
+
+.profile-info-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.user-name {
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  margin-bottom: 85px; 
+}
+
+/* 프로필 편집 버튼 */
+.edit-profile-btn {
+  width: 400px;
+  height: 64px;
+  background: #96D174;
+  border-radius: 20px;
+  border: 1px solid #96D174;
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 35px; 
+  transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+  background-color: #FFFFFF;
+  color: #333333;
+  border: 1px solid #DCDCDC;
+}
+
+/* 토글바 */
+.toggle-bar {
+  width: 620px;
+  height: 76px;
+  background: #F3F3F3;
   border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
-.record-list.scroll-area::-webkit-scrollbar-track {
-  background-color: #F3F3F3;
-  border-radius: 10px;
+.toggle-bar.is-public {
+  background-color: #EFF8EA;
 }
 
-/* 나머지 기존 스타일 (body, header, profile 등)은 그대로 두시면 됩니다 */
+.toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
+
+.toggle-icon-img { 
+  width: 20px; 
+  height: 17.993px; 
+  object-fit: contain; 
+}
+
+.toggle-text { display: flex; flex-direction: column; gap: 4px; }
+.toggle-title { margin: 0; font-size: 15px; font-weight: bold; color: #333; }
+
+/* 토글 스위치 */
+.toggle-switch-container { position: relative; display: inline-block; width: 46px; height: 24px; }
+.toggle-switch-container input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+
+input:checked + .slider { background-color: #96D174; }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* 하단 카드 리스트 영역 */
+.section-divider-container { margin-top: 99px; width: 100%; }
+.gray-line { width: 100%; height: 1px; background: #DCDCDC; border: none; margin: 0; }
+.bottom-content-area { display: flex; width: 100%; min-height: 1117px; background: #FFF; padding-top: 44px; box-sizing: border-box; }
+.study-section { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.section-title { font-size: 24px; font-weight: 500; margin-bottom: 35px; }
+.record-list { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; }
