@@ -1,3 +1,5 @@
+import Input from './components/Input'; // 👈 여기도 추가!
+
 export default function EmailStep({ email, setEmail, onNext }) {
   return (
     <form className="login-box" onSubmit={onNext}>

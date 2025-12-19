@@ -4,7 +4,7 @@ import logo from '../assets/images/logo.svg';
 import PasswordField from '../components/PasswordField'; 
 import SignupForm from './Singupfrom.jsx';
 import ResetPasswordForm from './ResetPasswordForm';
-import Input from '../components/Input'
+import Input from '../components/Input';
 
 export default function Login() {
   const [view, setView] = useState('login');
