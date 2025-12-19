@@ -1,117 +1,26 @@
-/* 기본 레이아웃 및 텍스트 */
-body {
-  background-color: white;
-  color: black;
-  margin: 0;
-  overflow-x: hidden;
-}
-
-.mypage-container {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-}
-
-/* 헤더 영역 */
-.header-area {
-  display: flex;
-  justify-content: flex-end;
-  padding: 40px;
-  box-sizing: border-box;
-}
-
-.icon-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-}
-
+body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
+.mypage-container { width: 100%; min-height: 100vh; display: flex; flex-direction: column; background-color: #fff; }
+.header-area { display: flex; justify-content: flex-end; padding: 40px; box-sizing: border-box; }
+.icon-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .icon-wrapper:hover .back-text { color: #5D8546 !important; }
 .icon-wrapper:hover .clock-img.base { opacity: 0 !important; }
 .icon-wrapper:hover .clock-img.hover { opacity: 1 !important; }
-
 .clock-btn { background: none; border: none; outline: none; padding: 0; cursor: pointer; display: flex; }
 .icon-stack { position: relative; width: 32px; height: 32px; }
 .clock-img { position: absolute; top: 0; left: 0; width: 32px; height: 32px; object-fit: contain; transition: opacity 0.3s ease; }
 .clock-img.hover { filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%) !important; opacity: 0; }
 .back-text { font-size: 10px; font-weight: 500; color: #333; }
 
-/* 프로필 영역 */
-.profile-section {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: -40px;
-}
+.profile-section { display: flex; justify-content: center; width: 100%; margin-top: -40px; }
+.profile-content { display: flex; flex-direction: row; align-items: flex-end; gap: 60px; }
+.profile-image-circle { width: 328px; height: 328px; background-color: #E9E9E9; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+.profile-info-side { display: flex; flex-direction: column; align-items: flex-start; }
+.user-name { font-size: 24px; font-weight: bold; margin-bottom: 85px; }
 
-.profile-content {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 60px;
-}
+.edit-profile-btn { width: 400px; height: 64px; background: #96D174; border-radius: 20px; border: 1px solid #96D174; font-size: 16px; font-weight: 500; color: #FFFFFF; cursor: pointer; margin-bottom: 35px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+.edit-profile-btn:hover { background-color: #FFFFFF; color: #333333; border: 1px solid #DCDCDC; }
 
-.profile-image-circle {
-  width: 328px;
-  height: 328px;
-  background-color: #E9E9E9;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.profile-info-side {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.user-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 85px;
-}
-
-.edit-profile-btn {
-  width: 400px;
-  height: 64px;
-  background: #96D174;
-  border-radius: 20px;
-  border: 1px solid #96D174;
-  font-size: 16px;
-  font-weight: 500;
-  color: #FFFFFF;
-  cursor: pointer;
-  margin-bottom: 35px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.edit-profile-btn:hover {
-  background-color: #FFFFFF;
-  color: #333333;
-  border: 1px solid #DCDCDC;
-}
-
-/* 토글바 */
-.toggle-bar {
-  width: 620px;
-  height: 76px;
-  background: #F3F3F3;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 25px;
-  box-sizing: border-box;
-}
-
+.toggle-bar { width: 620px; height: 76px; background: #F3F3F3; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; box-sizing: border-box; }
 .toggle-bar.is-public { background-color: #EFF8EA; }
 .toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
 .toggle-icon-img { width: 20px; height: 17.993px; object-fit: contain; }
@@ -120,7 +29,6 @@ body {
 .toggle-title { margin: 0; font-size: 15px; font-weight: bold; color: #333; }
 .toggle-desc { margin: 0; font-size: 12px; color: #8E8E8E; }
 
-/* 스위치 슬라이더 */
 .toggle-switch-container { position: relative; width: 46px; height: 24px; }
 .toggle-switch-container input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
@@ -128,7 +36,6 @@ body {
 input:checked + .slider { background-color: #96D174; }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* 하단 콘텐츠 섹션 */
 .section-divider-container { margin-top: 99px; width: 100%; }
 .gray-line { width: 100%; height: 1px; background: #DCDCDC; border: none; }
 .bottom-content-area { display: flex; width: 100%; padding-top: 44px; padding-bottom: 100px; box-sizing: border-box; }
@@ -136,66 +43,39 @@ input:checked + .slider:before { transform: translateX(22px); }
 .section-title { font-size: 24px; font-weight: 500; margin-bottom: 35px; }
 .record-list { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; margin-bottom: 30px; }
 
-/* 🟢 랭킹 1,2,3등 그라데이션 수정 (좌우 대칭 광택 반영) 🟢 */
-.rank-item-box { width: auto; display: flex; justify-content: center; }
-
-/* 1등 금색: -10%부터 시작하여 왼쪽 경계를 부드럽게 처리 */
-.rank-1 > div {
-  background: linear-gradient(90deg, 
-    #FFEB35 -10%, 
-    #FFFFFF 15%, 
-    #FFEB35 40%, 
-    #FFEB35 100%
-  ) !important;
-  border: 1px solid #FFD700 !important;
-}
-
-/* 2등 은색: -10%부터 시작하여 왼쪽 경계를 부드럽게 처리 */
-.rank-2 > div {
-  background: linear-gradient(90deg, 
-    #CAD5DA -10%, 
-    #FFFFFF 15%, 
-    #CAD5DA 40%, 
-    #CAD5DA 100%
-  ) !important;
-  border: 1px solid #B4C0C9 !important;
-}
-
-/* 3등 동색: -10%부터 시작하여 왼쪽 경계를 부드럽게 처리 */
-.rank-3 > div {
-  background: linear-gradient(90deg, 
-    #FFC4A7 -10%, 
-    #FFFFFF 15%, 
-    #FFC4A7 40%, 
-    #FFC4A7 100%
-  ) !important;
-  border: 1px solid #EAA085 !important;
-}
-
-/* 일반 랭킹/내 기록 박스 테두리 */
-.rank-item-box:not(.rank-1):not(.rank-2):not(.rank-3) > div {
-  background-color: white !important;
-  border: 1px solid #DCDCDC !important;
-}
-
-/* 버튼 그룹 가로 나열 */
-.button-group-row {
+/* 🟢 랭킹 박스 설정 */
+.rank-item-box {
+  position: relative; 
+  width: auto;
   display: flex;
-  gap: 15px;
   justify-content: center;
-  width: 100%;
 }
 
-.styled-action-btn {
-  background-color: #E9E9E9;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 25px;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-  transition: background 0.2s;
+/* 🟢 1등(rank-1) 박스에만 위쪽 여백을 주어 왕관 공간 확보 */
+/* 이렇게 하면 '랭킹' 글자와 왕관 사이의 불필요한 공백이 사라집니다. */
+.rank-1 {
+  margin-top: 0px; 
 }
 
-.styled-action-btn:hover { background-color: #DCDCDC; }
+/* 🟢 왕관 스타일 */
+.crown-svg {
+  position: absolute;
+  left: 21px;         
+  bottom: calc(100% + 10px); 
+  width: 64px;
+  height: 44px;
+  fill: #FFF700;
+  filter: drop-shadow(2px 3px 3px rgba(0, 0, 0, 0.25));
+  z-index: 10;
+}
+
+/* 1,2,3등 부드러운 그라데이션 */
+.rank-1 > div { background: linear-gradient(90deg, #FFEB35 -10%, #FFFFFF 15%, #FFEB35 40%, #FFEB35 100%) !important; border: 1px solid #FFD700 !important; }
+.rank-2 > div { background: linear-gradient(90deg, #CAD5DA -10%, #FFFFFF 15%, #CAD5DA 40%, #CAD5DA 100%) !important; border: 1px solid #B4C0C9 !important; }
+.rank-3 > div { background: linear-gradient(90deg, #FFC4A7 -10%, #FFFFFF 15%, #FFC4A7 40%, #FFC4A7 100%) !important; border: 1px solid #EAA085 !important; }
+
+/* 일반 박스 */
+.rank-item-box:not(.rank-1):not(.rank-2):not(.rank-3) > div { background-color: white !important; border: 1px solid #DCDCDC !important; }
+
+.button-group-row { display: flex; gap: 15px; justify-content: center; width: 100%; }
+.styled-action-btn { background-color: #E9E9E9; border: none; border-radius: 10px; padding: 12px 25px; font-size: 15px; font-weight: bold; color: #333; cursor: pointer; }

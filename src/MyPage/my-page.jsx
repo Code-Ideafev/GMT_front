@@ -5,6 +5,7 @@ import clockIcon from "./Vector.svg";
 import groupIcon from "./Group.svg";       
 import groupOpenIcon from "./Group 67.svg"; 
 import defaultProfile from "./Group 92.svg"; 
+import crownIcon from "./Vector5.svg"; 
 import { useNavigate } from "react-router-dom"; 
 
 export default function MyPage() {
@@ -16,7 +17,6 @@ export default function MyPage() {
   const [myVisibleCount, setMyVisibleCount] = useState(5);
   const [rankVisibleCount, setRankVisibleCount] = useState(5);
 
-  // 1. 오늘 공부 기록 20개 (00:00:00 고정 포맷)
   const myTodayRecords = Array.from({ length: 20 }, (_, i) => ({
     userName,
     time: `00 : ${String(59 - i).padStart(2, '0')} : 00`, 
@@ -24,14 +24,12 @@ export default function MyPage() {
     isMine: true
   }));
 
-  // 2. 타인 랭킹 20명
   const otherRankers = Array.from({ length: 20 }, (_, i) => ({
     userName: `유저 ${i + 1}`,
     time: `${String(Math.max(0, 10 - i)).padStart(2, '0')} : 00 : 00`, 
     date: "2025.09.04"
   }));
 
-  // 3. 랭킹 로직: 공개 시 내 최고기록 포함
   const getSortedRanking = () => {
     let list = [...otherRankers];
     if (isPublic) {
@@ -108,6 +106,7 @@ export default function MyPage() {
             <div className="record-list">
               {sortedRanking.slice(0, rankVisibleCount).map((item, index) => (
                 <div key={index} className={`rank-item-box rank-${index + 1}`}>
+                   {index === 0 && <img src={crownIcon} alt="crown" className="crown-svg" />}
                    <StudyRecordCard {...item} />
                 </div>
               ))}
