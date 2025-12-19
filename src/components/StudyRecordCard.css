@@ -1,4 +1,4 @@
-/* --- 1. 상단 아이콘 및 돌아가기 영역 --- */
+/* 사용자님 원본 코드 */
 .header-area {
   display: flex;
   justify-content: flex-end;
@@ -22,15 +22,13 @@
   display: flex;
 }
 
-/* 🟢 평소 상태: 필터를 완전히 제거해서 원본 연초록(#96D174)이 나오게 함 */
 .nav-icon-svg {
   width: 32px;
   height: 32px;
   transition: all 0.2s ease;
-  filter: none !important; /* 강제로 필터 해제 (빨간색 방지) */
+  filter: none !important;
 }
 
-/* 🟢 마우스 올렸을 때: 밝기만 낮춰서 진초록(#5D8546)으로 변경 */
 .icon-wrapper:hover .nav-icon-svg {
   filter: brightness(0.7) contrast(1.1) !important;
 }
@@ -42,7 +40,6 @@
   margin-top: 4px;
 }
 
-/* --- 2. 프로필 편집 페이지 중앙 레이아웃 --- */
 .edit-profile-container {
   width: 100%;
   display: flex;
@@ -88,7 +85,6 @@
   margin-bottom: 40px;
 }
 
-/* 4방향 그림자 흰색 버튼 */
 .white-shadow-btn {
   width: 160px;
   height: 52px;
@@ -105,7 +101,6 @@
               0 2px 2px 0 rgba(0, 0, 0, 0.10);
 }
 
-/* 완료 버튼 (160x44) */
 .complete-btn {
   width: 160px;
   height: 44px;
@@ -119,7 +114,6 @@
   cursor: pointer;
 }
 
-/* --- 3. 학습 기록 카드 (마이페이지용) --- */
 .record-card {
   width: 580px;
   height: 80px;
@@ -138,4 +132,18 @@
   height: 44px;
   background-color: #D9D9D9;
   border-radius: 50%;
+}
+
+/* 🟢 이름이 원 옆에 오도록 하는 필수 스타일 */
+.card-left-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-record-name {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
 }

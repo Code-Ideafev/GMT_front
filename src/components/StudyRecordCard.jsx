@@ -1,33 +1,35 @@
-import React from "react";
-import "./StudyRecordCard.css";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import clockIcon from "./Vector1.svg"; 
+import cameraIcon from "./Camera.svg";
+import StudyRecordCard from "../components/StudyRecordCard";
+import "../components/StudyRecordCard.css"; 
 
-export default function StudyRecordCard({ time, date, isEditMode = false }) {
-  const name = "김수빈";
+export default function EditProfilePage() {
+  const navigate = useNavigate();
 
   return (
-    <>
-      {!isEditMode ? (
-        /* 1. 마이페이지용 기본 학습 기록 카드 */
-        <div className="record-card">
-          <div className="card-left-section">
-            <div className="user-profile-circle"></div> 
-            <span className="user-record-name">{name}</span>
-          </div>
-          <div className="card-right-section">
-            <span className="record-time">{time}</span>
-            <span className="record-date">{date}</span>
-          </div>
+    <div className="edit-profile-container">
+      <div className="header-area">
+        <div className="icon-wrapper" onClick={() => navigate(-1)}>
+          <button className="clock-btn">
+            <img src={clockIcon} alt="back" className="nav-icon-svg" />
+          </button>
+          <span className="back-text">돌아가기</span>
         </div>
-      ) : (
-        /* 2. 프로필 편집 페이지용 레이아웃 */
-        <div className="edit-section-wrapper">
-          <h2 className="edit-photo-title">사진 편집</h2>
-          <div className="edit-button-group">
-            <button className="white-shadow-btn">사진 업로드</button>
-            <button className="white-shadow-btn">기본 사진</button>
-          </div>
+      </div>
+
+      <div className="edit-content-section">
+        <div className="profile-image-circle large">
+          <img src={cameraIcon} alt="camera" className="camera-icon-img" />
         </div>
-      )}
-    </>
+        
+        <StudyRecordCard isEditMode={true} />
+
+        <button className="complete-btn" onClick={() => navigate(-1)}>
+          완료
+        </button>
+      </div>
+    </div>
   );
 }
