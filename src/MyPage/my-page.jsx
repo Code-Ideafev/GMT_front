@@ -19,6 +19,23 @@ export default function MyPage() {
     setProfileImage(saved);
   }, []);
 
+  // 1. 내 누적 공부 기록 (갯수에 따라 박스 생성)
+  const myRecords = [
+    { time: "3 : 40 : 03", date: "2025.09.04" },
+    { time: "2 : 20 : 10", date: "2025.09.04" },
+    { time: "1 : 15 : 45", date: "2025.09.03" },
+    { time: "4 : 10 : 00", date: "2025.09.02" },
+    { time: "0 : 50 : 22", date: "2025.09.01" },
+  ];
+
+  // 2. 전체 랭킹 데이터 (상위 20명)
+  const ranking20 = Array.from({ length: 20 }, (_, i) => ({
+    name: `사용자 ${i + 1}`,
+    time: `${20 - i} : 00 : 00`,
+    date: "2025.09.04",
+    isMine: false
+  }));
+
   return (
     <div className="mypage-container">
       <div className="header-area">
@@ -56,25 +73,28 @@ export default function MyPage() {
       <div className="section-divider-container">
         <hr className="gray-line" />
         <div className="bottom-content-area">
-          {/* 사용자님 원본 개수 3개 복구 */}
+          {/* 왼쪽 섹션 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
-            <div className="record-list">
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
+            <div className="record-list-wrapper">
+              <div className="record-list scroll-area">
+                {myRecords.map((record, index) => (
+                  <StudyRecordCard key={index} isMine={true} userName={userName} time={record.time} date={record.date} />
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* 오른쪽 랭킹 3개 복구 및 내 프로필 조건부 노출 */}
+          {/* 오른쪽 섹션 */}
           <div className="study-section">
-            <h2 className="section-title">전체 공부시간 (랭킹)</h2>
-            <div className="record-list">
-              <StudyRecordCard isMine={false} userName="이준호" time="10 : 00 : 00" date="2025.09.04" />
-              {isPublic && (
-                <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />
-              )}
-              <StudyRecordCard isMine={false} userName="박지민" time="2 : 50 : 00" date="2025.09.04" />
+            <h2 className="section-title">전체 공부시간 (랭킹 20)</h2>
+            <div className="record-list-wrapper">
+              <div className="record-list scroll-area">
+                {isPublic && <StudyRecordCard isMine={true} userName={userName} time="3 : 40 : 03" date="2025.09.04" />}
+                {ranking20.map((user, index) => (
+                  <StudyRecordCard key={index} isMine={user.isMine} userName={user.name} time={user.time} date={user.date} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -82,3 +102,4 @@ export default function MyPage() {
     </div>
   );
 }
+//헤헤

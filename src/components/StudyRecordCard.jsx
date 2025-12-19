@@ -1,6 +1,5 @@
 import React from "react";
 import "./StudyRecordCard.css";
-// 경로를 components 폴더 기준으로 MyPage 폴더를 찾아가도록 수정했습니다.
 import defaultProfile from "../MyPage/Group 92.svg"; 
 
 export default function StudyRecordCard({ 
