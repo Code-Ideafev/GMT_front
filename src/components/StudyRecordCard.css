@@ -153,3 +153,25 @@
   color: #333333;
   border: 1px solid #DCDCDC;
 }
+
+.complete-btn:hover{
+  background-color: #FFFFFF;
+  color: #333333;
+  border: 1px solid #DCDCDC;
+}
+
+.complete-btn{
+  width: 160px;
+  height: 52px;
+  background: #96D174;
+  border: 1px solid #96D174;
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
