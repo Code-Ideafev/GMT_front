@@ -11,13 +11,6 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* 포커스 되었을 때 효과 */
-.customInput:focus {
-  border: 1.2px solid #575757;
-}
-
-/* src/components/Inputtype.module.css */
-
 .customInput:focus {
   border: 1.5px solid #575757 !important; /* !important를 붙여서 다른 CSS가 못 이기게 합니다 */
   outline: none;
