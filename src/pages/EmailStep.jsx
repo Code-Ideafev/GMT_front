@@ -1,7 +1,7 @@
 export default function EmailStep({ email, setEmail, onNext }) {
   return (
     <form className="login-box" onSubmit={onNext}>
-      <input 
+      <Input 
         type="email" 
         placeholder="학교 이메일을 입력하세요 (@gsm.hs.kr)" 
         value={email}

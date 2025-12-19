@@ -25,7 +25,7 @@ export default function ResetPasswordForm({ onBack }) {
   const handleSendCode = (e) => {
     e.preventDefault();
     if (!/^[a-zA-Z0-9._%+-]+@gsm\.hs\.kr$/.test(email)) {
-      return alert("학교 공식 이메일(@gsm.hs.kr)만 사용 가능합니다.");
+      return alert("이메일을 확인해주세요! 사용할 수 없는 이메일이에요! ");
     }
     alert('인증번호 발송!');
     setTimeLeft(180);

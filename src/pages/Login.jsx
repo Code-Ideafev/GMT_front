@@ -4,6 +4,7 @@ import logo from '../assets/images/logo.svg';
 import PasswordField from '../components/PasswordField'; 
 import SignupForm from './Singupfrom.jsx';
 import ResetPasswordForm from './ResetPasswordForm';
+import Input from '../components/Input'
 
 export default function Login() {
   const [view, setView] = useState('login');
@@ -14,7 +15,7 @@ export default function Login() {
         <div id="loginContainer">
           <img src={logo} className="logo" alt="logo" />
           <form className="login-box" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="이메일을 입력하세요" />
+            <Input type="email" placeholder="이메일을 입력하세요" />
             <PasswordField id="password" placeholder="비밀번호를 입력하세요" />
             <button>확인</button>
             <div className="links">
