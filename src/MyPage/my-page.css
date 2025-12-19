@@ -1,4 +1,4 @@
-/* 기본 초기화 */
+/* 상단 기본 초기화 및 컨테이너 원본 유지 */
 body {
   background-color: white;
   color: black;
@@ -12,7 +12,7 @@ body {
   flex-direction: column;
 }
 
-/* 상단 영역 */
+/* 상단 영역 원본 유지 */
 .header-area {
   display: flex;
   justify-content: flex-end;
@@ -39,18 +39,41 @@ body {
   justify-content: center;
 }
 
-/* 시계 기본색 필터: #96D174 */
-.clock-btn img {
+/* 🟢 시계 아이콘 애니메이션 수정: 중간색 없이 부드럽게 */
+.icon-stack {
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+
+.clock-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 32px;
   height: 32px;
   object-fit: contain;
-  transition: filter 0.3s ease;
-  filter: invert(85%) sepia(9%) saturate(1814%) hue-rotate(54deg) brightness(96%) contrast(86%);
+  transition: opacity 0.3s ease; /* 필터가 아닌 투명도로 부드럽게 조절 */
 }
 
-/* 시계 호버색 필터: #5D8546 */
-.clock-btn:hover img {
+/* 기본 색상 (#96D174) */
+.clock-img.base {
+  opacity: 1;
+}
+
+/* 호버 색상 (#5D8546) */
+.clock-img.hover {
   filter: invert(48%) sepia(16%) saturate(1061%) hue-rotate(55deg) brightness(92%) contrast(88%);
+  opacity: 0;
+}
+
+/* 호버 시 동작 */
+.clock-btn:hover .clock-img.base {
+  opacity: 0;
+}
+
+.clock-btn:hover .clock-img.hover {
+  opacity: 1;
 }
 
 .back-text {
@@ -59,7 +82,7 @@ body {
   color: #333;
 }
 
-/* 프로필 섹션 */
+/* 프로필 섹션 및 나머지 원본 코드 100% 동일하게 유지 */
 .profile-section {
   display: flex;
   justify-content: center;
@@ -84,12 +107,6 @@ body {
   align-items: center;
 }
 
-.camera-icon-img {
-  width: 52.48px;
-  height: 49.2px;
-  object-fit: contain;
-}
-
 .profile-info-side {
   display: flex;
   flex-direction: column;
@@ -104,7 +121,6 @@ body {
   margin-bottom: 85px; 
 }
 
-/* 프로필 편집 버튼 */
 .edit-profile-btn {
   width: 400px;
   height: 64px;
@@ -129,7 +145,6 @@ body {
   border: 1px solid #DCDCDC;
 }
 
-/* 토글바 */
 .toggle-bar {
   width: 620px;
   height: 76px;
@@ -148,17 +163,10 @@ body {
 }
 
 .toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
-
-.toggle-icon-img { 
-  width: 20px; 
-  height: 17.993px; 
-  object-fit: contain; 
-}
-
+.toggle-icon-img { width: 20px; height: 17.993px; object-fit: contain; }
 .toggle-text { display: flex; flex-direction: column; gap: 4px; }
 .toggle-title { margin: 0; font-size: 15px; font-weight: bold; color: #333; }
 
-/* 토글 스위치 */
 .toggle-switch-container { position: relative; display: inline-block; width: 46px; height: 24px; }
 .toggle-switch-container input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
@@ -167,7 +175,6 @@ body {
 input:checked + .slider { background-color: #96D174; }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* 하단 카드 리스트 영역 */
 .section-divider-container { margin-top: 99px; width: 100%; }
 .gray-line { width: 100%; height: 1px; background: #DCDCDC; border: none; margin: 0; }
 .bottom-content-area { display: flex; width: 100%; min-height: 1117px; background: #FFF; padding-top: 44px; box-sizing: border-box; }

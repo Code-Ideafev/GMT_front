@@ -23,7 +23,13 @@ export default function MyPage() {
     <div className="mypage-container">
       <div className="header-area">
         <div className="icon-wrapper">
-          <button className="clock-btn"><img src={clockIcon} alt="history" /></button>
+          {/* 시계 아이콘 영역 수정 */}
+          <button className="clock-btn">
+            <div className="icon-stack">
+              <img src={clockIcon} alt="history" className="clock-img base" />
+              <img src={clockIcon} alt="history" className="clock-img hover" />
+            </div>
+          </button>
           <span className="back-text">돌아가기</span>
         </div>
       </div>
@@ -56,7 +62,6 @@ export default function MyPage() {
       <div className="section-divider-container">
         <hr className="gray-line" />
         <div className="bottom-content-area">
-          {/* 사용자님 원본 개수 3개 복구 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
@@ -66,7 +71,6 @@ export default function MyPage() {
             </div>
           </div>
 
-          {/* 오른쪽 랭킹 3개 복구 및 내 프로필 조건부 노출 */}
           <div className="study-section">
             <h2 className="section-title">전체 공부시간 (랭킹)</h2>
             <div className="record-list">
