@@ -1,53 +1,48 @@
-/* --- 기본 카드 스타일 --- */
-.record-card {
-  width: 580px;
-  height: 80px;
-  border: 1px solid #DCDCDC;
-  border-radius: 15px;
+/* --- 1. 상단 아이콘 및 돌아가기 영역 --- */
+.header-area {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  background-color: #fff;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 40px 40px; 
   box-sizing: border-box;
 }
 
-.card-left-section {
+.icon-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px; 
+  gap: 4px;
+  cursor: pointer;
 }
 
-.user-profile-circle {
-  width: 44px;
-  height: 44px;
-  background-color: #D9D9D9;
-  border-radius: 50%;
-}
-
-.user-record-name {
-  font-size: 18px;
-  font-weight: 500;
-  color: #000;
-}
-
-.card-right-section {
+.clock-btn {
+  background: none;
+  border: none;
+  padding: 0;
   display: flex;
-  align-items: center;
-  gap: 35px;
 }
 
-.record-time {
-  font-size: 18px;
-  font-weight: bold;
+/* 🟢 평소 상태: 필터를 완전히 제거해서 원본 연초록(#96D174)이 나오게 함 */
+.nav-icon-svg {
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+  filter: none !important; /* 강제로 필터 해제 (빨간색 방지) */
 }
 
-.record-date {
-  font-size: 16px;
+/* 🟢 마우스 올렸을 때: 밝기만 낮춰서 진초록(#5D8546)으로 변경 */
+.icon-wrapper:hover .nav-icon-svg {
+  filter: brightness(0.7) contrast(1.1) !important;
+}
+
+.back-text {
+  font-size: 10px;
   color: #333;
+  font-family: 'Pretendard', sans-serif;
+  margin-top: 4px;
 }
 
-/* --- 프로필 편집 페이지 및 통합 스타일 --- */
+/* --- 2. 프로필 편집 페이지 중앙 레이아웃 --- */
 .edit-profile-container {
   width: 100%;
   display: flex;
@@ -83,9 +78,7 @@
   color: #000;
   font-family: 'Pretendard', sans-serif;
   font-size: 20px;
-  font-style: normal;
   font-weight: 500;
-  line-height: normal;
   margin-bottom: 30px;
 }
 
@@ -95,6 +88,7 @@
   margin-bottom: 40px;
 }
 
+/* 4방향 그림자 흰색 버튼 */
 .white-shadow-btn {
   width: 160px;
   height: 52px;
@@ -105,14 +99,13 @@
   font-family: 'Pretendard', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: #000;
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.10), 
               -2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               0 2px 2px 0 rgba(0, 0, 0, 0.10);
 }
 
-/* 완료 버튼 (요청하신 160x44 크기 반영) */
+/* 완료 버튼 (160x44) */
 .complete-btn {
   width: 160px;
   height: 44px;
@@ -124,4 +117,25 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* --- 3. 학습 기록 카드 (마이페이지용) --- */
+.record-card {
+  width: 580px;
+  height: 80px;
+  border: 1px solid #DCDCDC;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.user-profile-circle {
+  width: 44px;
+  height: 44px;
+  background-color: #D9D9D9;
+  border-radius: 50%;
 }
