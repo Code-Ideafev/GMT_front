@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PasswordField from '../components/PasswordField';
 import Input from '../components/Inputtype';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 
 export default function SingupForm({ onBack }) {
   const [name, setName] = useState('');
@@ -9,7 +9,7 @@ export default function SingupForm({ onBack }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(true); // 기본으로 열려있게 설정
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
 
   const isEmailInvalid = email.length > 0 && !email.endsWith('@gsm.hs.kr');
@@ -18,17 +18,14 @@ export default function SingupForm({ onBack }) {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-
     if (!isAgreed) {
       alert("개인정보 수집 및 이용에 동의해야 가입이 가능합니다.");
       return;
     }
-
     if (!name || !email || !password || !confirmPassword) {
       alert("모든 정보를 입력해주세요!");
       return;
     }
-
     alert("회원가입 성공!");
     onBack();
   };
@@ -60,7 +57,7 @@ export default function SingupForm({ onBack }) {
           {isConfirmInvalid && <div style={warningStyle}>비밀번호가 일치하지 않아요!</div>}
         </div>
 
-        {/* ⭐ 두 번째 사진 스타일의 개인정보 박스 ⭐ */}
+        {/* 개인정보 박스 */}
         <div className="privacy-container">
           <div className="privacy-header" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}>
             <span>개인정보 수집 및 이용 안내</span>
@@ -69,31 +66,27 @@ export default function SingupForm({ onBack }) {
           
           {isPrivacyOpen && (
             <div className="privacy-content">
-              <strong>1. 수집 항목</strong><br />
-              이름, 이메일 주소, 비밀번호<br /><br />
-              
-              <strong>2. 수집 목적</strong><br />
-              • 회원 식별 및 관리<br />
-              • 서비스 제공 및 공지사항 전달<br /><br />
-              
-              <strong>3. 보유 및 이용 기간</strong><br />
-              회원 탈퇴 시까지<br />
-
-              {/* 회색 강조 박스 부분 */}
+              <strong>1. 수집 항목</strong><br />이름, 이메일 주소, 비밀번호<br /><br />
+              <strong>2. 수집 목적</strong><br />• 회원 식별 및 관리<br />• 서비스 제공 및 공지사항 전달<br /><br />
+              <strong>3. 보유 및 이용 기간</strong><br />회원 탈퇴 시까지<br />
               <div className="privacy-inner-box">
                 이용자는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있으며, 동의를 거부할 경우 회원가입이 제한될 수 있습니다.
               </div>
             </div>
           )}
 
-          <div className="privacy-checkbox-area">
+          {/* 바탕색 없이 체크 표시만 색깔 있게 */}
+          <div className="privacy-checkbox-area" onClick={() => setIsAgreed(!isAgreed)}>
+            <div className={`custom-checkbox ${isAgreed ? 'checked' : ''}`}>
+              {isAgreed && <Check size={14} color="#ff4d4d" strokeWidth={3} />}
+            </div>
             <input 
               type="checkbox" 
-              id="privacy-check" 
+              className="hidden-checkbox"
               checked={isAgreed} 
-              onChange={(e) => setIsAgreed(e.target.checked)} 
+              readOnly
             />
-            <label htmlFor="privacy-check">개인정보 수집 및 이용에 동의합니다 (필수)</label>
+            <label>개인정보 수집 및 이용에 동의합니다 (필수)</label>
           </div>
         </div>
 

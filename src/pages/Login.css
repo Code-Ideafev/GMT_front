@@ -215,16 +215,16 @@ button {
 }
 
 /* =========================
-   개인정보 동의 섹션 (두 번째 사진 스타일)
+   개인정보 동의 섹션 (사진 스타일 완벽 복사)
 ========================= */
 .privacy-container {
   width: 360px;
   margin-top: 10px;
   margin-bottom: 20px;
-  border: 1px solid #e0e0e0; /* 전체 회색 테두리 */
+  border: 1px solid #E5E5E5;
   border-radius: 12px;
   padding: 15px;
-  background-color: #fff;
+  background-color: #fcfcfc;
   box-sizing: border-box;
 }
 
@@ -237,8 +237,8 @@ button {
 }
 
 .privacy-header span {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #333;
 }
 
@@ -251,8 +251,8 @@ button {
 
 /* 안쪽 회색 강조 박스 */
 .privacy-inner-box {
-  background-color: #f8f8f8;
-  border: 1px solid #eeeeee;
+  background-color: #ffffff;
+  border: 1px solid #E5E5E5;
   border-radius: 8px;
   padding: 10px;
   margin: 15px 0;
@@ -260,20 +260,35 @@ button {
   color: #888;
 }
 
+/* ⭐ 커스텀 체크박스 영역 ⭐ */
 .privacy-checkbox-area {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 10px;
+  cursor: pointer; /* 전체 영역 클릭 가능하게 */
 }
 
-/* 체크박스 크기 및 색상 */
-.privacy-checkbox-area input[type="checkbox"] {
-  width: 18px !important;
-  height: 18px !important;
-  margin: 0 !important;
-  accent-color: #ff0000;
-  cursor: pointer;
+/* 실제 체크박스는 숨김 */
+.hidden-checkbox {
+  display: none;
+}
+
+/* 커스텀 체크박스 사각형 */
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #dcdcdc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+.custom-checkbox.checked {
+  border-color: #de6363; 
 }
 
 .privacy-checkbox-area label {
