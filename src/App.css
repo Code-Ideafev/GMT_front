@@ -1,6 +1,61 @@
-/* =========================
-   기본 레이아웃
-========================= */
+/* =================================================
+   1. 친구의 전체 배경 및 레이아웃 (main)
+   ================================================= */
+.app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* GMT 로고 */
+.gmt-top-logo {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 234px; 
+  height: 112px;
+}
+
+/* MY 섹션 */
+.my-profile-top {
+  position: absolute;
+  top: 60px;
+  right: 100px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+}
+
+/* 중앙 타이머 섹션 */
+.timer-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: -500px;
+}
+
+.time-number-text {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 45px;
+  line-height: 100%;
+  color: #66A841;
+  width: 297px;
+  height: 87px;
+  text-align: center;
+  margin-top: -100px;
+}
+
+/* =================================================
+   2. 도연님의 로그인/회원가입 스타일 (feature/login)
+   ================================================= */
 body {
   margin: 0;
   height: 100vh;
@@ -22,17 +77,13 @@ body {
   display: none !important;
 }
 
-/* =========================
-   로고
-========================= */
+/* 로고 */
 .logo {
   width: 380px;
   margin-bottom: 20px;
 }
 
-/* =========================
-   공통 input / button
-========================= */
+/* 공통 input / button */
 .login-box input {
   width: 360px;
   height: 57px;
@@ -55,9 +106,7 @@ button {
   cursor: pointer;
 }
 
-/* =========================
-   비밀번호 input + 토글
-========================= */
+/* 비밀번호 input + 토글 */
 .password-field {
   position: relative;
 }
@@ -80,9 +129,7 @@ button {
   opacity: 1;
 }
 
-/* =========================
-   로그인 영역
-========================= */
+/* 로그인 영역 */
 #loginForm button {
   margin-top: 40px;
 }
@@ -104,9 +151,7 @@ button {
   text-decoration: underline;
 }
 
-/* =========================
-   회원가입
-========================= */
+/* 회원가입 */
 #signupContainer {
   padding: 20px 40px;
   border-radius: 20px;
@@ -152,11 +197,7 @@ button {
   color: red;
 }
 
-
-/* =========================
-   비밀번호 재설정
-========================= */
-
+/* 비밀번호 재설정 */
 #resetPasswordContainer input {
   width: 360px;
   height: 57px;
