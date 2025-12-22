@@ -1,27 +1,30 @@
-import React from "react";
+import React, { memo } from "react"; // 1. memo 추가
 import "./StudyRecordCard.css";
 import defaultProfile from "../MyPage/Group 92.svg"; 
 
-export default function StudyRecordCard({ 
+// 2. profileImage를 props로 직접 받도록 수정
+function StudyRecordCard({ 
   time = "0 : 00 : 00", 
   date = "2025.00.00", 
   isEditMode = false, 
   onUploadClick, 
   onResetClick,
   isMine = false, 
-  userName = "이름 없음" 
+  userName = "이름 없음",
+  profileImage // 👈 MyPage에서 전달받을 프로필 이미지
 }) {
-  const mySavedImage = localStorage.getItem("userProfileImage");
+  
+  // 3. 내부의 localStorage.getItem 제거 (성능 최적화 핵심)
 
   return (
     <>
       {!isEditMode ? (
-        /* 일반 기록 카드 */
         <div className="record-card">
           <div className="card-left-section">
             <div className="user-profile-circle">
               {isMine ? (
-                <img src={mySavedImage || defaultProfile} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                // 부모로부터 받은 profileImage를 바로 사용
+                <img src={profileImage || defaultProfile} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', backgroundColor: '#D9D9D9' }} />
               )}
@@ -32,7 +35,6 @@ export default function StudyRecordCard({
           <span className="record-date">{date}</span>
         </div>
       ) : (
-        /* 🟢 사진 편집 섹션: 이 내부 요소들이 중앙에 오도록 감싸는 구조 */
         <div className="edit-section-wrapper">
           <h2 className="edit-photo-title">사진 편집</h2>
           <div className="edit-button-group">
@@ -44,3 +46,6 @@ export default function StudyRecordCard({
     </>
   );
 }
+
+// 4. memo로 감싸서 export (데이터가 안 바뀌면 다시 안 그려지게 함)
+export default memo(StudyRecordCard);

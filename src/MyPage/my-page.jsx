@@ -7,23 +7,23 @@ import groupOpenIcon from "./Group 67.svg";
 import defaultProfile from "./Group 92.svg"; 
 import crownIcon from "./Vector5.svg"; 
 import { useNavigate } from "react-router-dom"; 
-import apiClient from '../api/apiClient'; // 도연님이 만든 공통 클라이언트
+import apiClient from '../api/apiClient';
 
 export default function MyPage() {
   const navigate = useNavigate(); 
   
-  // --- 상태 관리 (API 연동 시 여기에 데이터가 담깁니다) ---
-  const [userName, setUserName] = useState("사용자"); 
+  // --- 상태 관리 ---
+  const [userName, setUserName] = useState("사용자"); // 초기값
   const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
-  const [myTodayRecords, setMyTodayRecords] = useState([]); // 내 공부 기록 배열
-  const [sortedRanking, setSortedRanking] = useState([]);    // 랭킹 데이터 배열
+  const [myTodayRecords, setMyTodayRecords] = useState([]); // 내 기록
+  const [sortedRanking, setSortedRanking] = useState([]);    // 랭킹 데이터
 
-  // --- 더보기/닫기 기능 위한 상태 ---
+  // --- 더보기/닫기 상태 ---
   const [myVisibleCount, setMyVisibleCount] = useState(5);
   const [rankVisibleCount, setRankVisibleCount] = useState(5);
 
-  // --- 날짜 처리 (UI 표시 및 API 요청용) ---
+  // --- 날짜 처리 ---
   const getTodayDate = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -37,14 +37,14 @@ export default function MyPage() {
     // 1. 로컬 이미지 불러오기
     setProfileImage(localStorage.getItem("userProfileImage"));
 
-    // 2. API 데이터 로딩 (연동 시 주석 해제)
+    // 2. API 데이터 로딩 준비
     const fetchData = async () => {
       try {
-        /* const res = await apiClient.get('/api/v1/mypage'); 
-        setUserName(res.data.userName);
-        setMyTodayRecords(res.data.records);
-        setSortedRanking(res.data.ranking);
-        */
+        // [연동 시 주석 해제]
+        // const res = await apiClient.get('/api/v1/mypage'); 
+        // setUserName(res.data.userName);
+        // setMyTodayRecords(res.data.records);
+        // setSortedRanking(res.data.ranking);
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
@@ -55,13 +55,12 @@ export default function MyPage() {
   const handleTogglePublic = async () => {
     const newStatus = !isPublic;
     setIsPublic(newStatus);
-    // TODO: apiClient.patch('/api/v1/user/status', { public: newStatus });
   };
 
   return (
     <div className="mypage-container">
       <div className="header-area">
-        {/* 🟢 수정: 돌아가기 클릭 시 Timer 화면('/')으로 이동 */}
+        {/* 돌아가기 클릭 시 메인 타이머("/")로 이동 */}
         <div className="icon-wrapper" onClick={() => navigate("/")}> 
           <button className="clock-btn">
             <div className="icon-stack">
@@ -79,7 +78,8 @@ export default function MyPage() {
             <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="profile-info-side">
-            <span className="user-name">{userName}님</span>
+            {/* 🟢 '님' 삭제 완료: {userName}만 표시됩니다. */}
+            <span className="user-name">{userName}</span>
             <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
@@ -101,13 +101,16 @@ export default function MyPage() {
       <div className="section-divider-container">
         <hr className="gray-line" />
         <div className="bottom-content-area">
-          {/* 내 공부 시간 섹션 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
               {myTodayRecords.length > 0 ? (
                 myTodayRecords.slice(0, myVisibleCount).map((item, index) => (
-                  <StudyRecordCard key={index} {...item} />
+                  <StudyRecordCard 
+                    key={index} 
+                    {...item} 
+                    profileImage={profileImage} // 최적화 적용
+                  />
                 ))
               ) : (
                 <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
@@ -121,7 +124,6 @@ export default function MyPage() {
             )}
           </div>
           
-          {/* 랭킹 섹션 */}
           <div className="study-section">
             <h2 className="section-title">랭킹</h2>
             <div className="record-list">
@@ -129,7 +131,10 @@ export default function MyPage() {
                 sortedRanking.slice(0, rankVisibleCount).map((item, index) => (
                   <div key={index} className={`rank-item-box rank-${index + 1}`}>
                      {index === 0 && <img src={crownIcon} alt="crown" className="crown-svg" />}
-                     <StudyRecordCard {...item} />
+                     <StudyRecordCard 
+                        {...item} 
+                        profileImage={profileImage} // 최적화 적용
+                      />
                   </div>
                 ))
               ) : (
