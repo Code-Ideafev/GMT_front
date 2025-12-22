@@ -21,3 +21,4 @@ export default function PasswordField({ id, placeholder, value, onChange }) {
     </div>
   );
 }
+
