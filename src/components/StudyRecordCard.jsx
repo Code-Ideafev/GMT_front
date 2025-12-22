@@ -13,7 +13,8 @@ function StudyRecordCard({
   userName = "이름 없음",
   profileImage // 👈 MyPage에서 전달받을 프로필 이미지
 }) {
-  
+  //흠
+
   // 3. 내부의 localStorage.getItem 제거 (성능 최적화 핵심)
 
   return (
