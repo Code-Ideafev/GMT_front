@@ -12,6 +12,6 @@
 }
 
 .customInput:focus {
-  border: 1.5px solid #575757 !important;
+  border: 1.4px solid #575757 !important;
   outline: none;
 }

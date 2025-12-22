@@ -21,7 +21,6 @@ export default function Login() {
 
       if (response.status === 200) {
         alert('로그인에 성공했습니다!');
-        // TODO: 메인 페이지 이동 로직 추가 (예: navigate('/main'))
       }
     } catch (error) {
       console.error('로그인 에러:', error);
