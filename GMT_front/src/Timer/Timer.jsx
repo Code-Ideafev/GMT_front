@@ -7,8 +7,7 @@ import myIcon from "../assets/img/Group91.svg";
 import leafIcon from "../assets/img/Group72.svg";
 
 export default function Timer() {
-  const [sec, setSec] = useState(3540);
-  //const [sec, setSec] = useState(0);
+  const [sec, setSec] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
   // 1. 요청하신 12가지 무지개 색상
@@ -18,7 +17,7 @@ export default function Timer() {
     "#9867D5", "#ED73E3", "#E24A9E", "#DAA4A5",
   ];
 
-  // 2. [색상 로직] 24시간(86400초)을 12구간으로 나눔 (2시간마다 색상 인덱스 변경)
+  // 2. [색상 로직] 24시간(3600초)을 12구간으로 나눔 (2시간마다 색상 인덱스 변경)
   const colorInterval = Math.floor(sec / 7200) % 12;
   const nextColorInterval = (colorInterval + 1) % 12;
 
