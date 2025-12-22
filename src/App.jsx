@@ -14,5 +14,6 @@ export default function App() {
         <Route path="/EditProfile" element={<EditProfilePage />} />
       </Routes>
     </BrowserRouter>
+    
   );
 }
