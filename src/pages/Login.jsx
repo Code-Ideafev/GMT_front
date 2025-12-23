@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import './Login.css';
 import logo from '../assets/images/logo.svg'; 
 import PasswordField from '../components/PasswordField'; 
@@ -11,6 +13,7 @@ export default function Login() {
   const [view, setView] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); 
 
   // ---------------------------------------------------------
   // [추가] 로그인 페이지 전용 탭 제목 및 파비콘 설정
@@ -36,11 +39,12 @@ export default function Login() {
     e.preventDefault(); 
 
     try {
-      // 실제 서버로 로그인 요청을 보냅니다.
       const response = await loginApi({ email, password });
 
       if (response.status === 200) {
         alert('로그인에 성공했습니다!');
+        // ⭐ 로그인 성공 시에만 타이머로 이동
+        navigate('/timer'); 
       }
     } catch (error) {
       console.error('로그인 에러:', error);
