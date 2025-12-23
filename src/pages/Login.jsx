@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './Login.css';
@@ -13,6 +14,26 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); 
+
+  // ---------------------------------------------------------
+  // [추가] 로그인 페이지 전용 탭 제목 및 파비콘 설정
+  // ---------------------------------------------------------
+  useEffect(() => {
+    // 1. 탭 제목을 "로그인"으로 변경
+    document.title = "로그인";
+
+    // 2. 파비콘 업데이트 로직 (개인 페이지, 타이머와 동일)
+    const updateFavicon = () => {
+      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/svg+xml';
+      link.rel = 'shortcut icon';
+      // 수정된 viewBox가 즉시 반영되도록 버전 쿼리를 붙입니다.
+      document.getElementsByTagName('head')[0].appendChild(link);
+    };
+
+    updateFavicon();
+  }, []); 
+  // ---------------------------------------------------------
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault(); 
@@ -35,6 +56,7 @@ export default function Login() {
     <div className="container"> 
       {view === 'login' && (
         <div id="loginContainer">
+          {/* 여기서 사용되는 logo이미지도 파비콘과 동일한 svg 파일을 사용하게 됩니다 */}
           <img src={logo} className="logo" alt="logo" />
           <form className="login-box" onSubmit={handleLoginSubmit}>
             <Input 

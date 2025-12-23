@@ -12,7 +12,6 @@ import apiClient from '../api/apiClient';
 export default function MyPage() {
   const navigate = useNavigate(); 
   
-  // --- 상태 관리 ---
   const [userName, setUserName] = useState("불러오는 중..."); 
   const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
@@ -23,42 +22,37 @@ export default function MyPage() {
   const [rankVisibleCount, setRankVisibleCount] = useState(5);
 
   useEffect(() => {
-    // 1. 프로필 이미지는 로컬 스토리지에서 즉시 로드 (사용자 경험 향상)
+    // 1. 탭 제목 변경
+    document.title = "개인 페이지";
+
+    // 2. 파비콘 크게 인식시키기 로직
+    const updateFavicon = () => {
+      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/svg+xml';
+      link.rel = 'shortcut icon';
+      // ?v=20을 붙여서 방금 수정한 viewBox 설정을 브라우저가 바로 읽게 합니다.
+      document.getElementsByTagName('head')[0].appendChild(link);
+    };
+    updateFavicon();
+
     const localImage = localStorage.getItem("userProfileImage");
     if (localImage) setProfileImage(localImage);
 
-    // 2. 실제 서버 데이터 호출
     const fetchData = async () => {
       try {
-        // [REAL API CALL] 명세서의 회원 조회 API 호출
         const res = await apiClient.get('/user/list'); 
-        
-        console.log("서버 데이터 수신 성공:", res.data);
-
         if (res.data) {
-          // 백엔드에서 주는 필드명이 name, userName, nickname 중 무엇이든 대응
           const nameFromServer = res.data.name || res.data.userName || res.data.nickname;
-          if (nameFromServer) {
-            setUserName(nameFromServer);
-          }
+          if (nameFromServer) setUserName(nameFromServer);
         }
       } catch (error) {
         console.error("데이터 로드 실패:", error);
-        
-        // 토큰이 없거나 만료(401)된 경우 로그인 페이지로 강제 이동 (필요 시 주석 해제)
-        // if (error.response && error.response.status === 401) {
-        //   alert("로그인이 필요합니다.");
-        //   navigate("/login");
-        // }
-        
         setUserName("사용자"); 
       }
     };
-
     fetchData();
   }, [navigate]);
 
-  // 공개 여부 토글 (나중에 서버에 저장하는 PUT API가 생긴다면 여기서 호출)
   const handleTogglePublic = async () => {
     setIsPublic(!isPublic);
   };
@@ -118,11 +112,7 @@ export default function MyPage() {
             <div className="record-list">
               {myTodayRecords.length > 0 ? (
                 myTodayRecords.slice(0, myVisibleCount).map((item, index) => (
-                  <StudyRecordCard 
-                    key={index} 
-                    {...item} 
-                    profileImage={profileImage} 
-                  />
+                  <StudyRecordCard key={index} {...item} profileImage={profileImage} />
                 ))
               ) : (
                 <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
@@ -137,10 +127,7 @@ export default function MyPage() {
                 sortedRanking.slice(0, rankVisibleCount).map((item, index) => (
                   <div key={index} className={`rank-item-box rank-${index + 1}`}>
                      {index === 0 && <img src={crownIcon} alt="crown" className="crown-svg" />}
-                     <StudyRecordCard 
-                        {...item} 
-                        profileImage={profileImage} 
-                      />
+                     <StudyRecordCard {...item} profileImage={profileImage} />
                   </div>
                 ))
               ) : (

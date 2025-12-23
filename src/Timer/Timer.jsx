@@ -10,6 +10,26 @@ export default function Timer() {
   const [sec, setSec] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
+  // ---------------------------------------------------------
+  // [추가] 타이머 페이지 전용 탭 제목 및 파비콘 설정
+  // ---------------------------------------------------------
+  useEffect(() => {
+    // 1. 탭 제목 변경
+    document.title = "타이머";
+
+    // 2. 파비콘 업데이트 로직
+    const updateFavicon = () => {
+      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/svg+xml';
+      link.rel = 'shortcut icon';
+      // 수정한 viewBox 설정을 브라우저가 즉시 반영하도록 쿼리스트링(?v=20)을 붙입니다.
+      document.getElementsByTagName('head')[0].appendChild(link);
+    };
+
+    updateFavicon();
+  }, []); // 컴포넌트 마운트 시 1번 실행
+  // ---------------------------------------------------------
+
   // 1. 요청하신 12가지 무지개 색상
   const colorList = [
     "#DC4444", "#EDC965", "#F3E952", "#B7E5A4",
@@ -17,16 +37,15 @@ export default function Timer() {
     "#9867D5", "#ED73E3", "#E24A9E", "#DAA4A5",
   ];
 
-  // 2. [색상 로직] 24시간(3600초)을 12구간으로 나눔 (2시간마다 색상 인덱스 변경)
+  // 2. [색상 로직] 24시간(3600초)을 12구간으로 나눔
   const colorInterval = Math.floor(sec / 7200) % 12;
   const nextColorInterval = (colorInterval + 1) % 12;
 
-  // 3. [회전 로직] 원은 "1시간(3600초)" 마다 한 바퀴씩 리셋하며 회전
+  // 3. [회전 로직] 원은 "1시간(3600초)" 마다 한 바퀴씩 회전
   const rotationProgress = (sec % 3600) / 3600;
 
   const radius = 190;
   const dashArray = 2 * Math.PI * radius;
-  // 1시간 주기의 rotationProgress를 사용하여 선을 그립니다.
   const dashOffset = dashArray - (rotationProgress * dashArray);
 
   const handleFinish = () => {
@@ -66,7 +85,6 @@ export default function Timer() {
         <div className="timer-circle-wrapper">
           <svg width="420" height="420" viewBox="0 0 420 420">
             <defs>
-             
               <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor={colorList[colorInterval]} />
                 <stop offset="100%" stopColor={colorList[nextColorInterval]} />
@@ -86,7 +104,6 @@ export default function Timer() {
             />
           </svg>
 
-          {/* 새싹은 1시간마다 한 바퀴 회전 */}
           <div
             className="leaf-container"
             style={{ transform: `rotate(${rotationProgress * 360}deg)` }}
