@@ -47,14 +47,14 @@ export default function EmailStep({ email, setEmail, onNext }) {
           onChange={(e) => setEmail(e.target.value)}
         />
         
-        {/* ⭐ 경고 문구 및 회원가입 링크 표시 */}
+        {/* 경고 문구 및 회원가입 링크 표시 */}
         {errorMessage && (
           <div style={errorTextStyle}>
             {errorMessage}
             <br />
             <span 
               style={{ textDecoration: 'underline', cursor: 'pointer', color: '#ff4d4d', fontWeight: 'bold' }}
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/Singup')}
             >
               회원가입 하러 가기
             </span>
