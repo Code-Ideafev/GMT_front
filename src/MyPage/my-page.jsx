@@ -61,7 +61,7 @@ export default function MyPage() {
     <div className="mypage-container">
       <div className="header-area">
         {/* 돌아가기 클릭 시 메인 타이머("/")로 이동 */}
-        <div className="icon-wrapper" onClick={() => navigate("/")}> 
+        <div className="icon-wrapper" onClick={() => navigate("/timer")}> 
           <button className="clock-btn">
             <div className="icon-stack">
               <img src={clockIcon} alt="history" className="clock-img base" />

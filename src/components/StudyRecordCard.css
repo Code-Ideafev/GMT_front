@@ -67,17 +67,34 @@
   justify-content: center;
 }
 
-/* 버튼 스타일 및 호버 */
+/* 🔥 [수정] 사진 업로드 / 기본 사진 버튼 스타일 🔥 */
 .white-shadow-btn {
-  width: 160px; height: 52px; border-radius: 12px; background: #FFF; border: none; cursor: pointer;
-  font-family: 'Pretendard', sans-serif; font-size: 16px; font-weight: 500;
+  width: 160px; 
+  height: 52px; 
+  border-radius: 12px; 
+  background: #FFF; 
+  border: none; 
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 16px; 
+  font-weight: 500;
+  
+  /* 글자색을 검정으로 강제 고정 */
+  color: #000000 !important; 
+  
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.10), 
               -2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               0 2px 2px 0 rgba(0, 0, 0, 0.10);
   transition: all 0.2s ease;
 }
-.white-shadow-btn:hover { background-color: #D9D9D9; color: #333333; border: 1px solid #DCDCDC; }
+
+/* 🔥 [수정] 호버 시에도 글자색이 검정에서 안 변하게 고정 🔥 */
+.white-shadow-btn:hover { 
+  background-color: #E9E9E9 !important; /* 배경만 살짝 회색으로 */
+  color: #000000 !important;            /* 글자색은 무조건 검정 유지 */
+  border: 1px solid #DCDCDC !important; 
+}
 
 /* 완료 버튼 중앙 정렬 */
 .complete-btn {
