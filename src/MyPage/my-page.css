@@ -80,8 +80,8 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
 
 /* 🔥 [수정] 프로필 편집 버튼 곡률을 12px로 변경 🔥 */
 .edit-profile-btn { 
-  width: 400px; 
-  height: 64px; 
+  width: 620px; 
+  height: 76px; 
   background: #96D174; 
   border-radius: 12px; /* 20px -> 12px로 수정 */
   border: 1px solid #96D174; 
