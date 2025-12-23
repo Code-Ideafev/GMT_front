@@ -7,7 +7,7 @@ import groupOpenIcon from "./Group 67.svg";
 import defaultProfile from "./Group 92.svg"; 
 import crownIcon from "./Vector5.svg"; 
 import { useNavigate } from "react-router-dom"; 
-import apiClient from '../api/apiClient';
+import { getUserListApi, getTimerListApi } from '../api/apiClient';
 
 export default function MyPage() {
   const navigate = useNavigate(); 
@@ -18,74 +18,77 @@ export default function MyPage() {
   const [myTodayRecords, setMyTodayRecords] = useState([]); 
   const [sortedRanking, setSortedRanking] = useState([]);    
 
-  const [myVisibleCount, setMyVisibleCount] = useState(5);
-  const [rankVisibleCount, setRankVisibleCount] = useState(5);
+  const formatTime = (seconds) => {
+    const totalSeconds = parseInt(seconds || 0, 10);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return `${h} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
+  };
 
   useEffect(() => {
-    // 1. 페이지 설정
     document.title = "개인 페이지";
-
-    const updateFavicon = () => {
-      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-      link.type = 'image/svg+xml';
-      link.rel = 'shortcut icon';
-      document.getElementsByTagName('head')[0].appendChild(link);
-    };
-    updateFavicon();
-
-    // 2. 로컬 스토리지 데이터 로드
-    const localImage = localStorage.getItem("userProfileImage");
-    if (localImage) setProfileImage(localImage);
-
-    // 로그인 시 저장해둔 내 이메일을 가져옵니다. (필터링 기준)
     const myEmail = localStorage.getItem("userEmail"); 
+    const token = localStorage.getItem("accessToken");
 
-    // 3. API 데이터 페칭
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
     const fetchData = async () => {
       try {
-        // [A] 사용자 기본 정보 가져오기
-        const userRes = await apiClient.get('/user/list'); 
-        if (userRes.data) {
-          const nameFromServer = userRes.data.name || userRes.data.userName || userRes.data.nickname;
-          if (nameFromServer) setUserName(nameFromServer);
+        const userRes = await getUserListApi(); 
+        let currentUsername = "사용자";
+
+        if (Array.isArray(userRes.data)) {
+          const myInfo = userRes.data.find(user => user.email === myEmail);
+          currentUsername = myInfo?.username || myInfo?.nickname || "사용자";
+        } else if (userRes.data?.username) {
+          currentUsername = userRes.data.username;
         }
+        
+        setUserName(currentUsername);
 
-        // [B] 전체 타이머 기록 가져오기
-        // 백엔드 엔드포인트 주소를 확인하세요 (예: /timer/all 또는 /timer/list)
-        const timerRes = await apiClient.get('/timer/list'); 
-        const allRecords = timerRes.data; 
+        const timerRes = await getTimerListApi(); 
+        if (timerRes.data && Array.isArray(timerRes.data)) {
+          const allRecords = timerRes.data;
 
-        if (allRecords && Array.isArray(allRecords)) {
-          
-          // 1) 내 기록만 필터링 (내 이메일과 일치하는 것만)
-          const myFiltered = allRecords.filter(record => record.email === myEmail);
-          setMyTodayRecords(myFiltered);
+          const myBoxes = allRecords
+            .filter(record => record.email === myEmail)
+            .map(record => ({
+              nickname: currentUsername, 
+              time: formatTime(record.elapsedTime),
+              date: record.date || "2025.09.04" 
+            }));
+          setMyTodayRecords(myBoxes);
 
-          // 2) 랭킹 데이터 처리
-          // - 공개(isPublic) 설정된 유저만 필터링 (백엔드에서 안 해줄 경우를 대비)
-          // - 공부 시간(time)이 높은 순으로 내림차순 정렬
-          const ranking = allRecords
-            .filter(record => record.isPublic === true) // 공개 유저만 포함
-            .sort((a, b) => (b.time || 0) - (a.time || 0)); // 높은 시간순 정렬
-          
-          setSortedRanking(ranking);
+          const rankingBoxes = allRecords
+            .filter(record => record.rock === true)
+            .sort((a, b) => (b.elapsedTime || 0) - (a.elapsedTime || 0))
+            .map(record => ({
+              nickname: record.nickname || record.username || "익명 유저",
+              time: formatTime(record.elapsedTime),
+              date: record.date || "2025.09.04"
+            }));
+          setSortedRanking(rankingBoxes);
         }
       } catch (error) {
-        console.error("데이터 로드 실패:", error);
-        setUserName("사용자"); 
+        console.error("❌ 데이터 로드 중 에러 발생:", error);
+        if (error.response?.status === 403) {
+          setUserName("접근 권한 없음");
+        } else {
+          setUserName("서버 연결 실패");
+        }
       }
     };
     
     fetchData();
   }, [navigate]);
 
-  const handleTogglePublic = async () => {
-    // 프론트 상태 변경
-    const newStatus = !isPublic;
-    setIsPublic(newStatus);
-    
-    // (선택사항) 백엔드에 공개 여부 상태 저장 API 호출 로직이 필요할 수 있습니다.
-    // await apiClient.patch('/user/status', { isPublic: newStatus });
+  const handleTogglePublic = () => {
+    setIsPublic(!isPublic);
   };
 
   return (
@@ -105,24 +108,19 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            <img 
-              src={profileImage || defaultProfile} 
-              alt="profile" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            />
+            <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="profile-info-side">
-            <span className="user-name">{userName}</span>
-            <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>
-              프로필 편집
-            </button>
+            <span className="user-name">{userName}</span> 
+            <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
+                {/* 뜬 눈/감긴 눈 모두 grey-icon을 적용해 회색으로 유지 */}
                 <img src={isPublic ? groupOpenIcon : groupIcon} alt="eye" className="toggle-icon-img grey-icon" />
                 <div className="toggle-text">
                   <p className="toggle-title">공부 시간 {isPublic ? "공개" : "비공개"}</p>
                   <p className="toggle-desc">
-                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "다른 사람들이 내 공부 시간을 볼 수 없습니다"}
+                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "공부 시간이 비공개로 설정되어 있습니다"}
                   </p>
                 </div>
               </div>
@@ -138,13 +136,17 @@ export default function MyPage() {
       <div className="section-divider-container">
         <hr className="gray-line" />
         <div className="bottom-content-area">
-          {/* 내 누적 공부시간 섹션 */}
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
               {myTodayRecords.length > 0 ? (
-                myTodayRecords.slice(0, myVisibleCount).map((item, index) => (
-                  <StudyRecordCard key={index} {...item} profileImage={profileImage} />
+                myTodayRecords.map((item, index) => (
+                  <StudyRecordCard 
+                    key={index}
+                    nickname={item.nickname} 
+                    time={item.time}          
+                    date={item.date}          
+                  />
                 ))
               ) : (
                 <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
@@ -152,15 +154,33 @@ export default function MyPage() {
             </div>
           </div>
           
-          {/* 랭킹 섹션 */}
           <div className="study-section">
             <h2 className="section-title">랭킹</h2>
             <div className="record-list">
               {sortedRanking.length > 0 ? (
-                sortedRanking.slice(0, rankVisibleCount).map((item, index) => (
+                sortedRanking.map((item, index) => (
                   <div key={index} className={`rank-item-box rank-${index + 1}`}>
-                     {index === 0 && <img src={crownIcon} alt="crown" className="crown-svg" />}
-                     <StudyRecordCard {...item} profileImage={profileImage} />
+                     {index === 0 && (
+                       <img 
+                         src={crownIcon} 
+                         alt="crown" 
+                         className="crown-svg" 
+                         style={{ 
+                           position: 'absolute', 
+                           top: '-55px', 
+                           left: '5px', 
+                           zIndex: 10, 
+                           width: '90px', 
+                           height: 'auto' 
+                         }} 
+                       />
+                     )}
+                     <StudyRecordCard 
+                        nickname={item.nickname}
+                        time={item.time}
+                        date={item.date}
+                        profileImage={defaultProfile} 
+                     />
                   </div>
                 ))
               ) : (

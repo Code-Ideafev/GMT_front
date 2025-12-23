@@ -1,5 +1,11 @@
 /* 기본 배경 및 컨테이너 설정 */
-body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
+body { 
+  background-color: white; 
+  color: black; 
+  margin: 0; 
+  overflow-x: hidden; 
+}
+
 .mypage-container { 
   width: 100%; 
   min-height: 100vh; 
@@ -78,12 +84,11 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
 .profile-info-side { display: flex; flex-direction: column; align-items: flex-start; }
 .user-name { font-size: 24px; font-weight: bold; margin-bottom: 85px; }
 
-/* 🔥 [수정] 프로필 편집 버튼 곡률을 12px로 변경 🔥 */
 .edit-profile-btn { 
   width: 620px; 
   height: 76px; 
   background: #96D174; 
-  border-radius: 12px; /* 20px -> 12px로 수정 */
+  border-radius: 12px; 
   border: 1px solid #96D174; 
   font-size: 16px; 
   font-weight: 500; 
@@ -99,6 +104,12 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
 .toggle-bar.is-public { background-color: #EFF8EA; }
 .toggle-content-wrapper { display: flex; align-items: center; gap: 15px; }
 .toggle-icon-img { width: 20px; height: 17.993px; object-fit: contain; }
+
+/* 🟢 아이콘 회색 처리를 위한 필터 */
+.grey-icon {
+  filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(170deg) brightness(95%) contrast(88%) !important;
+}
+
 .toggle-text { display: flex; flex-direction: column; gap: 4px; }
 .toggle-title { margin: 0; font-size: 15px; font-weight: bold; color: #333; }
 .toggle-desc { margin: 0; font-size: 12px; color: #8E8E8E; }
@@ -124,12 +135,42 @@ input:checked + .slider:before { transform: translateX(22px); }
 .study-section { flex: 1; display: flex; flex-direction: column; align-items: center; }
 .section-title { font-size: 24px; font-weight: 500; margin-bottom: 35px; }
 
-/* 랭킹 박스 스타일 */
-.rank-item-box { position: relative; width: auto; display: flex; justify-content: center; }
-.rank-1 > div { background: linear-gradient(90deg, #FFEB35 -10%, #FFFFFF 15%, #FFEB35 40%, #FFEB35 100%) !important; border: 1px solid #FFD700 !important; }
-.rank-2 > div { background: linear-gradient(90deg, #CAD5DA -10%, #FFFFFF 15%, #CAD5DA 40%, #CAD5DA 100%) !important; border: 1px solid #B4C0C9 !important; }
-.rank-3 > div { background: linear-gradient(90deg, #FFC4A7 -10%, #FFFFFF 15%, #FFC4A7 40%, #FFC4A7 100%) !important; border: 1px solid #EAA085 !important; }
-.rank-item-box:not(.rank-1):not(.rank-2):not(.rank-3) > div { background-color: white !important; border: 1px solid #DCDCDC !important; }
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+  overflow: visible !important; 
+}
+
+.rank-item-box { 
+  position: relative !important; 
+  width: 100%; 
+  display: flex; 
+  justify-content: center; 
+}
+
+/* 1, 2, 3위 커스텀 배경 */
+.rank-1 > div { 
+  background: linear-gradient(90deg, #FFEB35 -10%, #FFFFFF 15%, #FFEB35 40%, #FFEB35 100%) !important; 
+  border: 1px solid #FFD700 !important; 
+}
+.rank-2 > div { 
+  background: linear-gradient(90deg, #CAD5DA -10%, #FFFFFF 15%, #CAD5DA 40%, #CAD5DA 100%) !important; 
+  border: 1px solid #B4C0C9 !important; 
+}
+.rank-3 > div { 
+  background: linear-gradient(90deg, #FFC4A7 -10%, #FFFFFF 15%, #FFC4A7 40%, #FFC4A7 100%) !important; 
+  border: 1px solid #EAA085 !important; 
+}
+
+.rank-item-box:not(.rank-1):not(.rank-2):not(.rank-3) > div { 
+  background-color: white !important; 
+  border: 1px solid #DCDCDC !important; 
+}
+
+.crown-svg {
+  pointer-events: none; 
+}
 
 /* 6. 버튼 레이아웃 */
 .button-group-row { display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 20px; }
@@ -154,3 +195,10 @@ input:checked + .slider:before { transform: translateX(22px); }
   cursor: pointer; display: block; margin: 0 auto; transition: all 0.3s ease;
 }
 .complete-btn:hover { background-color: #FFFFFF; color: #333333; border: 1px solid #DCDCDC; }
+
+/* empty message */
+.empty-msg {
+  color: #8E8E8E;
+  font-size: 14px;
+  margin-top: 20px;
+}

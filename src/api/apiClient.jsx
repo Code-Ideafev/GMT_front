@@ -1,27 +1,47 @@
 import axios from 'axios';
 
-// 우리 팀 공통 Axios 인스턴스 생성
-const apiClient = axios.create({
-  // 백엔드 팀원이 알려준 대문 주소
-  baseURL: 'http://localhost:8080', 
-  // 응답 대기 시간 (5초)
-  timeout: 5000, 
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const axiosInstance = axios.create({
+  baseURL: 'http://192.168.1.31:8080', 
+  timeout: 5000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// [선택사항] 응답 인터셉터: 에러가 발생했을 때 공통적으로 처리하고 싶다면 추가하세요.
-apiClient.interceptors.response.use(
-  (response) => {
-    // 서버 응답이 성공(200번대)일 때 바로 데이터만 리턴하게 할 수도 있습니다.
-    return response;
-  },
+// [중요] 모든 API 요청 전에 실행되는 인터셉터
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken'); 
+  
+  if (token) {
+    // 백엔드가 인식할 수 있도록 헤더에 토큰 주입
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log("✅ 토큰 주입 성공: 요청을 보냅니다.");
+  } else {
+    console.error("❌ 토큰 없음: 'accessToken'이 로컬스토리지에 있는지 확인하세요.");
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
   (error) => {
-    // 에러 발생 시 콘솔에 찍어주는 공통 로직
-    console.error('API 통신 에러:', error.response || error.message);
+    console.error('⚠️ 통신 에러 발생:', error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
 );
 
-export default apiClient;
+// --- API 함수 리스트 ---
+export const signUpApi = (data) => axiosInstance.post('/auth/join', data);
+export const loginApi = (data) => axiosInstance.post('/auth/login', data);
+export const sendEmailApi = (email) => axiosInstance.post('/email/send', { email });
+export const verifyEmailApi = (email, code) => axiosInstance.post('/email/verify', { email, code });
+
+// 타이머 관련
+export const startTimerApi = () => axiosInstance.get('/timer/startTime');
+export const stopTimerApi = () => axiosInstance.get('/timer/endTime');
+
+// 마이페이지 데이터 관련 (새로 추가)
+export const getUserListApi = () => axiosInstance.get('/user/list');
+export const getTimerListApi = () => axiosInstance.get('/timer/list');
+
+export default axiosInstance;
