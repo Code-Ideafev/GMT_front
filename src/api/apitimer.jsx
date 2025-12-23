@@ -1,57 +1,41 @@
 import axios from 'axios';
 
-// 1. 팀원이 만든 공통 Axios 인스턴스
-const apiClient = axios.create({
-  baseURL: 'http://localhost:8080', 
-  timeout: 5000, 
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const axiosInstance = axios.create({
+  baseURL: 'http://192.168.1.31:8080', 
+  timeout: 5000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// 응답 인터셉터 (팀원 코드)
-apiClient.interceptors.response.use(
+// [중요] 요청을 보낼 때마다 토큰 상태를 체크합니다.
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken'); 
+  
+  if (token) {
+    console.log("토큰을 확인했습니다.");
+    config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    // 403 에러의 주범: 로컬스토리지에 accessToken이 없을 때 실행됨
+    console.error("토큰이 없습니다! 'accessToken' 이름을 확인하세요.");
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API 통신 에러:', error.response || error.message);
+    console.error('통신 에러 발생:', error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
 );
 
-/**
- * 2. 타이머 시작 API (GET /timer/startTime)
- */
-export const startTimerApi = async () => {
-  const token = localStorage.getItem('accessToken'); 
+export const signUpApi = (data) => axiosInstance.post('/auth/join', data);
+export const loginApi = (data) => axiosInstance.post('/auth/login', data);
+export const sendEmailApi = (email) => axiosInstance.post('/email/send', { email });
+export const verifyEmailApi = (email, code) => axiosInstance.post('/email/verify', { email, code });
 
-  try {
-    const response = await apiClient.get('/timer/startTime', {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const startTimerApi = () => axiosInstance.get('/timer/startTime');
+export const stopTimerApi = () => axiosInstance.get('/timer/endTime');
 
-/**
- * 3. 타이머 종료 API (GET /timer/endTime)
- */
-export const stopTimerApi = async () => {
-  const token = localStorage.getItem('accessToken');
-
-  try {
-    const response = await apiClient.get('/timer/endTime', {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export default apiClient;
+export default axiosInstance;
