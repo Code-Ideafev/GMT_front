@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // ⭐ useEffect를 추가했습니다!
 import { useNavigate } from 'react-router-dom'; 
 import './Login.css';
 import logo from '../assets/images/logo.svg'; 
