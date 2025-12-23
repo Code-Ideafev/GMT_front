@@ -2,7 +2,6 @@ import { useState } from 'react';
 import PasswordField from '../components/PasswordField';
 import Input from '../components/Inputtype';
 import { ChevronDown, ChevronUp, Check } from 'lucide-react';
-// ⭐ 수정 포인트: 이미 만들어둔 signUpApi를 가져옵니다.
 import { signUpApi } from '../utils/axiosInstance'; 
 
 export default function SingupForm({ onBack }) {
@@ -19,7 +18,6 @@ export default function SingupForm({ onBack }) {
   const isPasswordInvalid = password.length > 0 && !/^\d{4}$/.test(password);
   const isConfirmInvalid = confirmPassword.length > 0 && password !== confirmPassword;
 
-  // 회원가입 통신 함수
   const handleSignUp = async (e) => {
     e.preventDefault();
 
@@ -43,11 +41,11 @@ export default function SingupForm({ onBack }) {
         password: password
       };
 
-      // API 호출
       const response = await signUpApi(signUpData);
 
       if (response.status === 200 || response.status === 201) {
-        alert("회원가입 성공!");
+        alert("회원가입 성공! 로그인 해주세요.");
+        // ⭐ 중요: 타이머로 가지 않고 로그인 화면(onBack)으로 돌아갑니다.
         onBack(); 
       }
     } catch (error) {
@@ -65,21 +63,21 @@ export default function SingupForm({ onBack }) {
         
         <div style={{ width: '100%', textAlign: 'left' }}>
           <Input placeholder="이메일 (@gsm.hs.kr)" value={email} onChange={(e) => setEmail(e.target.value)} />
-          {isEmailInvalid && <div style={warningStyle}>학교 이메일(@gsm.hs.kr) 형식을 확인해주세요!</div>}
+          {isEmailInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>학교 이메일(@gsm.hs.kr) 형식을 확인해주세요!</div>}
         </div>
         
         <div style={{ width: '100%', textAlign: 'left' }}>
           <PasswordField id="signupPassword" placeholder="비밀번호 설정" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {isPasswordInvalid && <div style={warningStyle}>4자리의 숫자 조합으로 비밀번호를 생성해주세요!</div>}
+          {isPasswordInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>4자리의 숫자 조합으로 비밀번호를 생성해주세요!</div>}
         </div>
 
         <div style={{ width: '100%', textAlign: 'left' }}>
           <PasswordField id="signupPasswordConfirm" placeholder="비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-          {isConfirmInvalid && <div style={warningStyle}>비밀번호가 일치하지 않아요!</div>}
+          {isConfirmInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>비밀번호가 일치하지 않아요!</div>}
         </div>
 
         <div className="privacy-container">
-          <div className="privacy-header" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}>
+          <div className="privacy-header" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)} style={{cursor: 'pointer'}}>
             <span>개인정보 수집 및 이용 안내</span>
             {isPrivacyOpen ? <ChevronUp size={20} color="#666" /> : <ChevronDown size={20} color="#666" />}
           </div>
@@ -96,11 +94,11 @@ export default function SingupForm({ onBack }) {
             </div>
           )}
 
-          <div className="privacy-checkbox-area" onClick={() => setIsAgreed(!isAgreed)}>
-            <div className={`custom-checkbox ${isAgreed ? 'checked' : ''}`}>
+          <div className="privacy-checkbox-area" onClick={() => setIsAgreed(!isAgreed)} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px'}}>
+            <div className={`custom-checkbox ${isAgreed ? 'checked' : ''}`} style={{width: '18px', height: '18px', border: '1px solid #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
               {isAgreed && <Check size={14} color="#ff4d4d" strokeWidth={3} />}
             </div>
-            <label style={{ cursor: 'pointer' }}>개인정보 수집 및 이용에 동의합니다 (필수)</label>
+            <label style={{ cursor: 'pointer', fontSize: '13px' }}>개인정보 수집 및 이용에 동의합니다 (필수)</label>
           </div>
         </div>
 
@@ -109,11 +107,3 @@ export default function SingupForm({ onBack }) {
     </div>
   );
 }
-
-const warningStyle = {
-  color: '#ff4d4d',
-  fontSize: '12px',
-  marginTop: '-12px',
-  marginBottom: '15px',
-  paddingLeft: '5px'
-};
