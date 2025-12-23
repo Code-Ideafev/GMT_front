@@ -78,9 +78,18 @@ body { background-color: white; color: black; margin: 0; overflow-x: hidden; }
 .profile-info-side { display: flex; flex-direction: column; align-items: flex-start; }
 .user-name { font-size: 24px; font-weight: bold; margin-bottom: 85px; }
 
+/* 🔥 [수정] 프로필 편집 버튼 곡률을 12px로 변경 🔥 */
 .edit-profile-btn { 
-  width: 400px; height: 64px; background: #96D174; border-radius: 20px; border: 1px solid #96D174; 
-  font-size: 16px; font-weight: 500; color: #FFFFFF; cursor: pointer; margin-bottom: 35px; 
+  width: 400px; 
+  height: 64px; 
+  background: #96D174; 
+  border-radius: 12px; /* 20px -> 12px로 수정 */
+  border: 1px solid #96D174; 
+  font-size: 16px; 
+  font-weight: 500; 
+  color: #FFFFFF; 
+  cursor: pointer; 
+  margin-bottom: 35px; 
   transition: all 0.3s ease; 
 }
 .edit-profile-btn:hover { background-color: #FFFFFF !important; color: #333333 !important; border: 1px solid #DCDCDC !important; }
@@ -125,24 +134,18 @@ input:checked + .slider:before { transform: translateX(22px); }
 /* 6. 버튼 레이아웃 */
 .button-group-row { display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 20px; }
 
-/* 🔥 [수정 완료] 사진 업로드/기본 사진 버튼 글자색 고정 🔥 */
+/* 사진 업로드/기본 사진 버튼 */
 .white-shadow-btn {
   width: 160px; height: 52px; border-radius: 12px; background: #FFF; border: none; cursor: pointer;
   font-family: 'Pretendard', sans-serif; font-size: 16px; font-weight: 500;
-  
-  color: #000000 !important;   /* ★글자색 무조건 검정★ */
-  
+  color: #000000 !important; 
   box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.10), 
               -2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               2px 0 2px 0 rgba(0, 0, 0, 0.10), 
               0 2px 2px 0 rgba(0, 0, 0, 0.10);
   transition: all 0.2s ease;
 }
-
-.white-shadow-btn:hover { 
-  background-color: #E9E9E9 !important; 
-  color: #000000 !important;  /* ★호버 시에도 무조건 검정★ */
-}
+.white-shadow-btn:hover { background-color: #E9E9E9 !important; color: #000000 !important; }
 
 /* 7. 완료 버튼 스타일 */
 .complete-btn {
