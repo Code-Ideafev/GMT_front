@@ -1,0 +1,275 @@
+/* =========================
+   기본 레이아웃 
+========================= */
+body {
+  margin: 0;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   로고
+========================= */
+.logo {
+  width: 360px;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   공통 input / button
+========================= */
+.login-box input {
+  width: 360px;
+  height: 57px;
+  padding: 17px;
+  margin-bottom: 17px;
+  border: 0.3px solid #ababab;
+  border-radius: 9px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+button {
+  width: 360px;
+  height: 50px;
+  background-color: #96d174;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* =========================
+   비밀번호 input + 토글
+========================= */
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 17px;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* =========================
+   로그인 영역
+========================= */
+#loginForm button {
+  margin-top: 40px;
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 5px;
+  width: 360px;
+}
+
+.links a {
+  color: #000;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   회원가입
+========================= */
+#signupContainer {
+  padding: 20px 40px;
+  border-radius: 20px;
+  width: 360px;
+  color: #222;
+}
+
+.welcome-text {
+  font-size: 20px;
+  margin-bottom: 50px;
+  font-weight: 600;
+}
+
+#signupForm input::placeholder {
+  color: #bbb;
+}
+
+.select-group {
+  display: flex;
+  gap: 10px;
+  width: 360px;
+  margin-bottom: 17px;
+}
+
+#signupForm select {
+  width: 100%;
+  height: 57px;
+  padding: 0 17px;
+  border: 0.3px solid #ababab;
+  border-radius: 9px;
+  background-color: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #222;
+  cursor: pointer;
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ababab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center; 
+  background-size: 18px;
+}
+
+#signupForm select:focus {
+  border: 1.2px solid #575757;
+  outline: none;
+}
+
+#signupForm button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+#signupWarningArea {
+  margin-top: 12px;
+  font-size: 13px;
+  height: 18px;
+  color: red;
+}
+
+/* =========================
+   비밀번호 재설정
+========================= */
+#resetPasswordContainer input {
+  width: 360px;
+  height: 57px;
+  padding: 15px;
+  margin-bottom: 13px;
+  border: 0.3px solid #ababab;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+#resetPasswordForm button {
+  height: 55px;
+  margin-top: 12px;
+  border-radius: 10px;
+}
+
+#resetPasswordWarningArea {
+  margin-top: 12px;
+  font-size: 13px;
+  color: red;
+}
+
+/* =========================
+   개인정보 동의 섹션
+========================= */
+.privacy-container {
+  width: 360px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  padding: 15px;
+  background-color: #fcfcfc;
+  box-sizing: border-box;
+}
+
+.privacy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.privacy-header span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
+.privacy-content {
+  text-align: left;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.privacy-inner-box {
+  background-color: #ffffff;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 15px 0;
+  font-size: 11px;
+  color: #888;
+}
+
+.privacy-checkbox-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.hidden-checkbox {
+  display: none;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #dcdcdc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+.custom-checkbox.checked {
+  border-color: #de6363; 
+}
+
+.privacy-checkbox-area label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}

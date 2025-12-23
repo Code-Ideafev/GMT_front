@@ -1,0 +1,99 @@
+/* 1. 일반 기록 카드 스타일 */
+.record-card {
+  width: 580px;
+  height: 80px;
+  border: 1px solid #DCDCDC;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.card-left-section { display: flex; align-items: center; gap: 15px; }
+.user-profile-circle { width: 44px; height: 44px; background-color: #D9D9D9; border-radius: 50%; overflow: hidden; }
+
+.user-record-name, .record-time, .record-date {
+  color: #000;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.record-time { position: absolute; left: 50%; transform: translateX(-50%); }
+.record-date { margin-left: auto; }
+
+/* 2. 사진 편집 창 중앙 정렬 */
+.edit-section-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* 큰 프로필 원 중앙 정렬 */
+.profile-image-circle.large {
+  width: 328px;
+  height: 328px;
+  background-color: #E9E9E9;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 30px auto; 
+  overflow: hidden;
+}
+
+.camera-icon-img { width: 52.48px; height: 49.2px; object-fit: contain; }
+
+.edit-photo-title {
+  color: #000;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.edit-button-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px; 
+  justify-content: center;
+}
+
+/* 버튼 스타일 및 호버 */
+.white-shadow-btn {
+  width: 160px; height: 52px; border-radius: 12px; background: #FFF; border: none; cursor: pointer;
+  font-family: 'Pretendard', sans-serif; font-size: 16px; font-weight: 500;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.10), 
+              -2px 0 2px 0 rgba(0, 0, 0, 0.10), 
+              2px 0 2px 0 rgba(0, 0, 0, 0.10), 
+              0 2px 2px 0 rgba(0, 0, 0, 0.10);
+  transition: all 0.2s ease;
+}
+.white-shadow-btn:hover { background-color: #D9D9D9; color: #333333; border: 1px solid #DCDCDC; }
+
+/* 완료 버튼 중앙 정렬 */
+.complete-btn {
+  width: 342px;
+  height: 52px;
+  background: #96D174;
+  border: 1px solid #96D174;
+  border-radius: 12px;
+  color: #FFF;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+.complete-btn:hover { background-color: #FFFFFF; color: #333333; border: 1px solid #DCDCDC; }
