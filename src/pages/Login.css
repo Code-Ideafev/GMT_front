@@ -1,5 +1,5 @@
 /* =========================
-   기본 레이아웃
+   기본 레이아웃 
 ========================= */
 body {
   margin: 0;
@@ -107,7 +107,6 @@ button {
 /* =========================
    회원가입
 ========================= */
-
 #signupContainer {
   padding: 20px 40px;
   border-radius: 20px;
@@ -133,7 +132,7 @@ button {
 }
 
 #signupForm select {
-  flex: 1;
+  width: 100%;
   height: 57px;
   padding: 0 17px;
   border: 0.3px solid #ababab;
@@ -143,23 +142,9 @@ button {
   font-size: 14px;
   color: #222;
   cursor: pointer;
-}
-
-#signupForm select {
-  width: 100%;
-  height: 57px;
-  padding: 0 17px;
-  border: 0.3px solid #ababab;
-  border-radius: 9px;
-  background-color: #fff;
-  font-size: 14px;
-  color: #222;
-  cursor: pointer;
-
   appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none; 
-
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ababab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center; 
@@ -183,11 +168,9 @@ button {
   color: red;
 }
 
-
 /* =========================
    비밀번호 재설정
 ========================= */
-
 #resetPasswordContainer input {
   width: 360px;
   height: 57px;
@@ -246,7 +229,6 @@ button {
   line-height: 1.6;
 }
 
-/* 안쪽 회색 강조 박스 */
 .privacy-inner-box {
   background-color: #ffffff;
   border: 1px solid #E5E5E5;
@@ -257,21 +239,18 @@ button {
   color: #888;
 }
 
-/* 커스텀 체크박스 영역  */
 .privacy-checkbox-area {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 10px;
-  cursor: pointer; /* 전체 영역 클릭 가능하게 */
+  cursor: pointer;
 }
 
-/* 실제 체크박스는 숨김 */
 .hidden-checkbox {
   display: none;
 }
 
-/* 커스텀 체크박스 사각형 */
 .custom-checkbox {
   width: 18px;
   height: 18px;
