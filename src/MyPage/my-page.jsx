@@ -7,14 +7,14 @@ import groupOpenIcon from "./Group 67.svg";
 import defaultProfile from "./Group 92.svg"; 
 import crownIcon from "./Vector5.svg"; 
 import { useNavigate } from "react-router-dom"; 
-import { getUserListApi, getTimerListApi, updateUserSettingsApi } from '../api/apiClient';
+import { getUserListApi, getTimerListApi, setPublicApi, setPrivateApi } from '../api/apiClient';
 
 export default function MyPage() {
   const navigate = useNavigate(); 
   
   const [userName, setUserName] = useState("불러오는 중..."); 
-  const [profileImage, setProfileImage] = useState(null);
-  const [isPublic, setIsPublic] = useState(false); 
+  const [profileImage, setProfileImage] = useState(null); // 내 프로필 이미지 상태
+  const [isPublic, setIsPublic] = useState(true); 
   const [myTodayRecords, setMyTodayRecords] = useState([]); 
   const [sortedRanking, setSortedRanking] = useState([]);
 
@@ -26,7 +26,6 @@ export default function MyPage() {
     return `${h} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
   };
 
-  // ✅ 데이터 가공 및 랭킹 집계 함수
   const fetchData = useCallback(async () => {
     const myEmail = localStorage.getItem("userEmail")?.trim().toLowerCase();
     const token = localStorage.getItem("accessToken");
@@ -34,8 +33,6 @@ export default function MyPage() {
 
     try {
       const [userRes, timerRes] = await Promise.all([getUserListApi(), getTimerListApi()]);
-      
-      // 데이터 구조 유연하게 대응 (userRes.data 또는 userRes.data.data)
       const userList = Array.isArray(userRes.data) ? userRes.data : (userRes.data?.data || []);
       const allRecords = Array.isArray(timerRes.data) ? timerRes.data : (timerRes.data?.data || []);
 
@@ -43,32 +40,43 @@ export default function MyPage() {
       const todayDash = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const todayDot = todayDash.replace(/-/g, '.');
 
-      // 1. 내 정보 설정 (LocalStorage 우선순위 적용)
+      // 1. 내 정보 설정
       const myInfo = userList.find(u => u.email?.trim().toLowerCase() === myEmail);
       const localRockMode = localStorage.getItem("my_rockMode");
+      const localProfileImg = localStorage.getItem("userProfileImage"); // 프로필 수정에서 저장한 로컬 값
       
-      let currentMyPublicStatus = false;
+      let currentMyPublicStatus = true;
+      let myCurrentImg = defaultProfile; // 내 이미지 변수 선언
+
       if (myInfo) {
         setUserName(myInfo.username || "사용자");
-        currentMyPublicStatus = localRockMode !== null ? localRockMode === "true" : myInfo.rockMode === true;
+        currentMyPublicStatus = localRockMode !== null ? localRockMode === "true" : true;
         setIsPublic(currentMyPublicStatus);
+        
+        // 내 이미지는 서버값 우선 -> 없으면 로컬스토리지 백업 -> 없으면 기본 이미지
+        myCurrentImg = myInfo.profileImage || localProfileImg || defaultProfile;
+        setProfileImage(myCurrentImg);
       }
 
-      // 2. 랭킹 집계 (Map 활용 및 데이터 정규화)
       const rankingMap = new Map();
 
+      // 2. 랭킹 집계 및 사용자별 이미지 매칭
       allRecords.forEach(record => {
-        // 오늘 날짜 기록만 처리
         if (record.recordDate === todayDash) {
           const rEmail = record.email?.trim().toLowerCase();
-          // 유저 리스트에서 해당 이메일 소유자 찾기
           const userDetail = userList.find(u => u.email?.trim().toLowerCase() === rEmail);
 
           if (userDetail) {
-            // ✅ 다른 사용자 정보 누락 방지를 위해 rockMode를 불리언으로 강제 변환
-            const isThisUserPublic = (rEmail === myEmail) 
-              ? currentMyPublicStatus 
-              : (userDetail.rockMode === true || userDetail.rockMode === "true");
+            let isThisUserPublic = false;
+            if (rEmail === myEmail) {
+              isThisUserPublic = currentMyPublicStatus;
+            } else {
+              const rawMode = userDetail.rockMode;
+              isThisUserPublic = (rawMode === true || rawMode === "true");
+              if (rawMode === false || rawMode === "false") {
+                isThisUserPublic = false;
+              }
+            }
 
             if (isThisUserPublic) {
               const val = Number(record.elapsedTime) || 0;
@@ -76,14 +84,13 @@ export default function MyPage() {
               
               if (rankingMap.has(rEmail)) {
                 const existing = rankingMap.get(rEmail);
-                rankingMap.set(rEmail, { 
-                  ...existing, 
-                  totalSeconds: existing.totalSeconds + seconds 
-                });
+                rankingMap.set(rEmail, { ...existing, totalSeconds: existing.totalSeconds + seconds });
               } else {
                 rankingMap.set(rEmail, { 
                   username: userDetail.username || "익명", 
-                  totalSeconds: seconds 
+                  totalSeconds: seconds,
+                  // ⭐ 포인트: 내가 랭킹에 있다면 내 이미지를, 타인이면 타인의 이미지를 매칭
+                  userImg: rEmail === myEmail ? myCurrentImg : (userDetail.profileImage || defaultProfile)
                 });
               }
             }
@@ -91,19 +98,20 @@ export default function MyPage() {
         }
       });
 
-      // 랭킹 상위 3명 정렬
+      // 3. 랭킹 데이터 정렬 및 상태 반영
       const rankingData = Array.from(rankingMap.values())
         .sort((a, b) => b.totalSeconds - a.totalSeconds)
         .slice(0, 3)
         .map(user => ({
           nickname: user.username,
           time: formatTime(user.totalSeconds),
-          date: todayDot
+          date: todayDot,
+          profileImage: user.userImg // 여기서 매칭된 각자의 이미지가 카드에 전달됨
         }));
 
       setSortedRanking(rankingData);
 
-      // 3. 내 오늘 누적 시간
+      // 4. 내 오늘 기록 카드 설정
       const myTotalSec = allRecords
         .filter(r => r.email?.trim().toLowerCase() === myEmail && r.recordDate === todayDash)
         .reduce((acc, cur) => {
@@ -112,41 +120,34 @@ export default function MyPage() {
         }, 0);
 
       setMyTodayRecords(myTotalSec > 0 ? [{
-        nickname: userName || "사용자",
+        nickname: myInfo?.username || "사용자",
         time: formatTime(myTotalSec),
-        date: todayDot
+        date: todayDot,
+        profileImage: myCurrentImg // 내 이미지 적용
       }] : []);
 
     } catch (error) {
-      console.error("데이터 로드 중 에러 발생:", error);
+      console.error("데이터 로드 실패:", error);
     }
-  }, [userName]);
+  }, []); // userName 의존성을 제거하여 무한 루프 방지
 
-  // ✅ 공개 설정 토글 (LocalStorage + Server)
   const handleTogglePublic = async () => {
     const nextStatus = !isPublic;
-    
     setIsPublic(nextStatus);
     localStorage.setItem("my_rockMode", String(nextStatus));
 
     try {
-      if (typeof updateUserSettingsApi === 'function') {
-        await updateUserSettingsApi({ rockMode: nextStatus });
-      }
+      if (nextStatus) await setPublicApi();
+      else await setPrivateApi();
     } catch (error) {
-      console.warn("⚠️ 서버 저장 실패(CORS), 로컬에만 저장되었습니다.");
+      console.warn("서버 반영 실패(CORS)");
     }
-    
-    // 랭킹 즉시 재계산
     fetchData(); 
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "개인 페이지";
-    const savedImage = localStorage.getItem("userProfileImage");
-    if (savedImage) setProfileImage(savedImage);
-    
     fetchData();
   }, [fetchData]);
 
@@ -167,7 +168,8 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {/* 상단 프로필 영역 내 이미지 */}
+            <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
           </div>
           <div className="profile-info-side">
             <span className="user-name">{userName}</span> 
@@ -197,7 +199,13 @@ export default function MyPage() {
             <div className="record-list">
               {myTodayRecords.length > 0 ? (
                 myTodayRecords.map((item, index) => (
-                  <StudyRecordCard key={index} nickname={item.nickname} time={item.time} date={item.date} profileImage={profileImage || defaultProfile} />
+                  <StudyRecordCard 
+                    key={index} 
+                    nickname={item.nickname} 
+                    time={item.time} 
+                    date={item.date} 
+                    profileImage={item.profileImage} // 내 이미지가 Card로 전달됨
+                  />
                 ))
               ) : (
                 <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
@@ -222,7 +230,7 @@ export default function MyPage() {
                         nickname={item.nickname} 
                         time={item.time} 
                         date={item.date} 
-                        profileImage={defaultProfile} 
+                        profileImage={item.profileImage} // 각 사용자별(나 포함) 이미지가 Card로 전달됨
                      />
                   </div>
                 ))

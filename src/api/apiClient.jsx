@@ -32,8 +32,8 @@ export const stopTimerApi = () => axiosInstance.get('/timer/endTime');
 export const getUserListApi = () => axiosInstance.get('/auth/list'); 
 export const getTimerListApi = () => axiosInstance.get('/timer/list');
 
-// ⭐ [추가됨] 공개/비공개 설정을 서버에 저장하는 API
-// 엔드포인트(/auth/update)는 서버 명세에 맞춰 조정이 필요할 수 있습니다.
-export const updateUserSettingsApi = (data) => axiosInstance.patch('/auth/update', data);
+// ⭐ [명세서 반영] 공개/비공개 설정 API (GET 방식)
+export const setPublicApi = () => axiosInstance.get('/timer/set-public');
+export const setPrivateApi = () => axiosInstance.get('/timer/set-private');
 
 export default axiosInstance;
