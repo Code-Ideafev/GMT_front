@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./my-page.css";
 import StudyRecordCard from "../components/StudyRecordCard";
 import clockIcon from "./Vector.svg";
@@ -7,20 +7,18 @@ import groupOpenIcon from "./Group 67.svg";
 import defaultProfile from "./Group 92.svg"; 
 import crownIcon from "./Vector5.svg"; 
 import { useNavigate } from "react-router-dom"; 
-import { getUserListApi, getTimerListApi } from '../api/apiClient';
+import { getUserListApi, getTimerListApi, updateUserSettingsApi } from '../api/apiClient';
 
 export default function MyPage() {
   const navigate = useNavigate(); 
   
   const [userName, setUserName] = useState("불러오는 중..."); 
   const [profileImage, setProfileImage] = useState(null);
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(false); 
   const [myTodayRecords, setMyTodayRecords] = useState([]); 
-  const [sortedRanking, setSortedRanking] = useState([]);    
+  const [sortedRanking, setSortedRanking] = useState([]);
 
-  // 시간을 "H : MM : SS" 형식으로 변환
   const formatTime = (seconds) => {
-    // 0초보다 작아지지 않게 방지
     const totalSeconds = Math.max(0, Math.floor(seconds || 0));
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
@@ -28,98 +26,129 @@ export default function MyPage() {
     return `${h} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
   };
 
-  useEffect(() => {
-    document.title = "개인 페이지";
-    const myEmail = localStorage.getItem("userEmail"); 
+  // ✅ 데이터 가공 및 랭킹 집계 함수
+  const fetchData = useCallback(async () => {
+    const myEmail = localStorage.getItem("userEmail")?.trim().toLowerCase();
     const token = localStorage.getItem("accessToken");
+    if (!token) return;
 
-    const savedImage = localStorage.getItem("userProfileImage");
-    if (savedImage) {
-      setProfileImage(savedImage);
-    }
+    try {
+      const [userRes, timerRes] = await Promise.all([getUserListApi(), getTimerListApi()]);
+      
+      // 데이터 구조 유연하게 대응 (userRes.data 또는 userRes.data.data)
+      const userList = Array.isArray(userRes.data) ? userRes.data : (userRes.data?.data || []);
+      const allRecords = Array.isArray(timerRes.data) ? timerRes.data : (timerRes.data?.data || []);
 
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
-      return;
-    }
+      const now = new Date();
+      const todayDash = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const todayDot = todayDash.replace(/-/g, '.');
 
-    const fetchData = async () => {
-      try {
-        const userRes = await getUserListApi(); 
-        let currentUsername = "사용자";
-        const userList = Array.isArray(userRes.data) ? userRes.data : userRes.data?.data;
-
-        if (Array.isArray(userList)) {
-          const myInfo = userList.find(user => 
-            user.email?.trim().toLowerCase() === myEmail?.trim().toLowerCase()
-          );
-          if (myInfo) {
-            currentUsername = myInfo.username || myInfo.nickname || "사용자";
-          }
-        }
-        setUserName(currentUsername);
-
-        const timerRes = await getTimerListApi(); 
-        if (timerRes.data && Array.isArray(timerRes.data)) {
-          const allRecords = timerRes.data;
-
-          const today = new Date();
-          const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-          const myLogsToday = allRecords.filter(record => 
-            record.email === myEmail && record.recordDate === todayStr
-          );
-
-          if (myLogsToday.length > 0) {
-            // ✅ 보정 포인트 1: 개별 기록을 더할 때 미리 소수점을 버립니다.
-            const totalElapsedSeconds = myLogsToday.reduce((acc, cur) => {
-                const serverValue = Number(cur.elapsedTime) || 0;
-                const seconds = serverValue >= 1000 ? serverValue / 1000 : serverValue;
-                return acc + Math.floor(seconds);
-            }, 0);
-            
-            // ✅ 보정 포인트 2: 합산 결과가 0보다 크면 무조건 1초를 강제로 뺍니다.
-            // 시스템상 어딘가에서 추가되는 1초를 여기서 상쇄합니다.
-            const finalAdjustedSeconds = totalElapsedSeconds > 0 ? totalElapsedSeconds - 1 : 0;
-
-            setMyTodayRecords([{
-              nickname: currentUsername,
-              time: formatTime(finalAdjustedSeconds),
-              date: todayStr.replace(/-/g, '.')
-            }]);
-          } else {
-            setMyTodayRecords([]);
-          }
-
-          // 랭킹에서도 1초씩 빼서 표시 (일관성)
-          const rankingBoxes = allRecords
-            .filter(record => record.rock === true)
-            .sort((a, b) => (b.elapsedTime || 0) - (a.elapsedTime || 0))
-            .map(record => {
-              const rTime = Number(record.elapsedTime) || 0;
-              const seconds = rTime >= 1000 ? rTime / 1000 : rTime;
-              const finalRankSeconds = seconds > 0 ? Math.floor(seconds) - 1 : 0;
-              return {
-                nickname: record.nickname || record.username || "익명 유저",
-                time: formatTime(finalRankSeconds),
-                date: record.recordDate ? record.recordDate.replace(/-/g, '.') : "2025.09.04"
-              };
-            });
-          setSortedRanking(rankingBoxes);
-        }
-      } catch (error) {
-        console.error("❌ 데이터 로드 에러:", error);
-        setUserName("사용자");
+      // 1. 내 정보 설정 (LocalStorage 우선순위 적용)
+      const myInfo = userList.find(u => u.email?.trim().toLowerCase() === myEmail);
+      const localRockMode = localStorage.getItem("my_rockMode");
+      
+      let currentMyPublicStatus = false;
+      if (myInfo) {
+        setUserName(myInfo.username || "사용자");
+        currentMyPublicStatus = localRockMode !== null ? localRockMode === "true" : myInfo.rockMode === true;
+        setIsPublic(currentMyPublicStatus);
       }
-    };
+
+      // 2. 랭킹 집계 (Map 활용 및 데이터 정규화)
+      const rankingMap = new Map();
+
+      allRecords.forEach(record => {
+        // 오늘 날짜 기록만 처리
+        if (record.recordDate === todayDash) {
+          const rEmail = record.email?.trim().toLowerCase();
+          // 유저 리스트에서 해당 이메일 소유자 찾기
+          const userDetail = userList.find(u => u.email?.trim().toLowerCase() === rEmail);
+
+          if (userDetail) {
+            // ✅ 다른 사용자 정보 누락 방지를 위해 rockMode를 불리언으로 강제 변환
+            const isThisUserPublic = (rEmail === myEmail) 
+              ? currentMyPublicStatus 
+              : (userDetail.rockMode === true || userDetail.rockMode === "true");
+
+            if (isThisUserPublic) {
+              const val = Number(record.elapsedTime) || 0;
+              const seconds = Math.floor(val >= 1000 ? val / 1000 : val);
+              
+              if (rankingMap.has(rEmail)) {
+                const existing = rankingMap.get(rEmail);
+                rankingMap.set(rEmail, { 
+                  ...existing, 
+                  totalSeconds: existing.totalSeconds + seconds 
+                });
+              } else {
+                rankingMap.set(rEmail, { 
+                  username: userDetail.username || "익명", 
+                  totalSeconds: seconds 
+                });
+              }
+            }
+          }
+        }
+      });
+
+      // 랭킹 상위 3명 정렬
+      const rankingData = Array.from(rankingMap.values())
+        .sort((a, b) => b.totalSeconds - a.totalSeconds)
+        .slice(0, 3)
+        .map(user => ({
+          nickname: user.username,
+          time: formatTime(user.totalSeconds),
+          date: todayDot
+        }));
+
+      setSortedRanking(rankingData);
+
+      // 3. 내 오늘 누적 시간
+      const myTotalSec = allRecords
+        .filter(r => r.email?.trim().toLowerCase() === myEmail && r.recordDate === todayDash)
+        .reduce((acc, cur) => {
+          const v = Number(cur.elapsedTime) || 0;
+          return acc + Math.floor(v >= 1000 ? v / 1000 : v);
+        }, 0);
+
+      setMyTodayRecords(myTotalSec > 0 ? [{
+        nickname: userName || "사용자",
+        time: formatTime(myTotalSec),
+        date: todayDot
+      }] : []);
+
+    } catch (error) {
+      console.error("데이터 로드 중 에러 발생:", error);
+    }
+  }, [userName]);
+
+  // ✅ 공개 설정 토글 (LocalStorage + Server)
+  const handleTogglePublic = async () => {
+    const nextStatus = !isPublic;
+    
+    setIsPublic(nextStatus);
+    localStorage.setItem("my_rockMode", String(nextStatus));
+
+    try {
+      if (typeof updateUserSettingsApi === 'function') {
+        await updateUserSettingsApi({ rockMode: nextStatus });
+      }
+    } catch (error) {
+      console.warn("⚠️ 서버 저장 실패(CORS), 로컬에만 저장되었습니다.");
+    }
+    
+    // 랭킹 즉시 재계산
+    fetchData(); 
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.title = "개인 페이지";
+    const savedImage = localStorage.getItem("userProfileImage");
+    if (savedImage) setProfileImage(savedImage);
     
     fetchData();
-  }, [navigate]);
-
-  const handleTogglePublic = () => {
-    setIsPublic(!isPublic);
-  };
+  }, [fetchData]);
 
   return (
     <div className="mypage-container">
@@ -138,11 +167,7 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            <img 
-              src={profileImage || defaultProfile} 
-              alt="profile" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            />
+            <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="profile-info-side">
             <span className="user-name">{userName}</span> 
@@ -152,9 +177,7 @@ export default function MyPage() {
                 <img src={isPublic ? groupOpenIcon : groupIcon} alt="eye" className="toggle-icon-img grey-icon" />
                 <div className="toggle-text">
                   <p className="toggle-title">공부 시간 {isPublic ? "공개" : "비공개"}</p>
-                  <p className="toggle-desc">
-                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "다른 사람들이 내 공부 시간을 볼 수 없습니다"}
-                  </p>
+                  <p className="toggle-desc">{isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "다른 사람들이 내 공부 시간을 볼 수 없습니다"}</p>
                 </div>
               </div>
               <label className="toggle-switch-container">
@@ -174,13 +197,7 @@ export default function MyPage() {
             <div className="record-list">
               {myTodayRecords.length > 0 ? (
                 myTodayRecords.map((item, index) => (
-                  <StudyRecordCard 
-                    key={index}
-                    nickname={item.nickname} 
-                    time={item.time}           
-                    date={item.date}
-                    profileImage={profileImage || defaultProfile} 
-                  />
+                  <StudyRecordCard key={index} nickname={item.nickname} time={item.time} date={item.date} profileImage={profileImage || defaultProfile} />
                 ))
               ) : (
                 <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
@@ -189,36 +206,28 @@ export default function MyPage() {
           </div>
           
           <div className="study-section">
-            <h2 className="section-title">랭킹</h2>
+            <h2 className="section-title">랭킹 (TOP 3)</h2>
             <div className="record-list">
               {sortedRanking.length > 0 ? (
                 sortedRanking.map((item, index) => (
-                  <div key={index} className={`rank-item-box rank-${index + 1}`}>
+                  <div key={index} className={`rank-item-box rank-${index + 1}`} style={{ position: 'relative' }}>
                      {index === 0 && (
                        <img 
                          src={crownIcon} 
                          alt="crown" 
-                         className="crown-svg" 
-                         style={{ 
-                           position: 'absolute', 
-                           top: '-55px', 
-                           left: '5px', 
-                           zIndex: 10, 
-                           width: '90px', 
-                           height: 'auto' 
-                         }} 
+                         style={{ position: 'absolute', top: '-45px', left: '19px', zIndex: 10, width: '64px', height: '44px' }} 
                        />
                      )}
                      <StudyRecordCard 
-                        nickname={item.nickname}
-                        time={item.time}
-                        date={item.date}
+                        nickname={item.nickname} 
+                        time={item.time} 
+                        date={item.date} 
                         profileImage={defaultProfile} 
                      />
                   </div>
                 ))
               ) : (
-                <p className="empty-msg">랭킹 데이터가 없습니다.</p>
+                <p className="empty-msg">기록이 없거나 공부 시간을 공개한 유저가 없습니다.</p>
               )}
             </div>
           </div>
