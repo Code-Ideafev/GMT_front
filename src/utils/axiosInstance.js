@@ -1,42 +1,52 @@
 import axios from 'axios';
 
-// 1. axios 기본 설정 (수빈이의 최신 IP 주소 적용)
 const axiosInstance = axios.create({
-  baseURL: 'http://192.168.1.31:8080', 
+  baseURL: 'http://172.16.1.34:8080', 
   timeout: 5000,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// 2. [요청 인터셉터] 서버에 신호를 보낼 때마다 토큰이 있으면 자동으로 실어 보냄
-axiosInstance.interceptors.request.use(
-  (config) => {
-    // 브라우저 저장소(localStorage)에서 토큰을 꺼내옵니다.
-    const token = localStorage.getItem('accessToken'); 
-    
-    // 토큰이 있다면 'Bearer ' 방식을 붙여서 Authorization 헤더에 추가합니다.
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; 
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// 모든 API 요청 전에 실행되는 인터셉터
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken'); 
+  
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log("✅ 토큰 주입 성공: 요청을 보냅니다.");
+  } else {
+    console.error("❌ 토큰 없음: 'accessToken'이 로컬스토리지에 있는지 확인하세요.");
   }
-);
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
-// 3. [응답 인터셉터] 서버에서 오는 에러를 콘솔에 예쁘게 찍어줌
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('통신 에러:', error.response?.data || error.message);
+    // 통신 에러 발생 시 로그 출력
+    console.error('⚠️ 통신 에러 발생:', error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
 );
 
-// 4. API 함수들 정의 (혜린이의 모든 컴포넌트에서 사용하는 이름들)
+// --- API 함수 리스트 ---
 export const signUpApi = (data) => axiosInstance.post('/auth/join', data);
 export const loginApi = (data) => axiosInstance.post('/auth/login', data);
+
+// ⭐ [필수 추가] 이 줄이 있어야 image_efc585 에러가 사라집니다!
+export const resetPasswordApi = (data) => axiosInstance.post('/auth/reset-password', data);
+
 export const sendEmailApi = (email) => axiosInstance.post('/email/send', { email });
+// 인증번호 확인 API
 export const verifyEmailApi = (email, code) => axiosInstance.post('/email/verify', { email, code });
+
+// 타이머 관련
+export const startTimerApi = () => axiosInstance.get('/timer/startTime');
+export const stopTimerApi = () => axiosInstance.get('/timer/endTime');
+
+// 마이페이지 데이터 관련
+export const getUserListApi = () => axiosInstance.get('/auth/list'); 
+export const getTimerListApi = () => axiosInstance.get('/timer/list');
 
 export default axiosInstance;

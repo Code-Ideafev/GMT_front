@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Input from "../components/Inputtype";
-import { sendEmailApi } from "../utils/axiosInstance"; // utils 폴더의 함수 호출
+import { sendEmailApi } from "../utils/axiosInstance"; 
 import { useNavigate } from "react-router-dom";
 
 export default function EmailStep({ email, setEmail, onNext }) {
@@ -12,7 +12,6 @@ export default function EmailStep({ email, setEmail, onNext }) {
     e.preventDefault();
     setErrorMessage(""); 
     
-    // 이메일 형식 체크
     if (!email.endsWith("@gsm.hs.kr")) {
       setErrorMessage("학교 이메일(@gsm.hs.kr) 형식을 확인해주세요.");
       return;
@@ -20,13 +19,11 @@ export default function EmailStep({ email, setEmail, onNext }) {
 
     setIsLoading(true);
     try {
-      // 1. 백엔드에 이메일 인증번호 발송 요청
+      // 수빈이 명세서대로 email을 보냅니다.
       await sendEmailApi(email);
       alert("인증번호가 발송되었습니다.");
-      onNext(); // 다음 단계(인증번호 입력창)로 이동
-      
+      onNext(); 
     } catch (error) {
-      // 2. 등록되지 않은 사용자인 경우 처리 (백엔드가 404를 준다고 가정)
       if (error.response && error.response.status === 404) {
         setErrorMessage("등록되어 있지 않은 사용자입니다. 회원가입 후 이용해주세요.");
       } else {
@@ -46,10 +43,8 @@ export default function EmailStep({ email, setEmail, onNext }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        
-        {/* 경고 문구 및 회원가입 링크 표시 */}
         {errorMessage && (
-          <div style={errorTextStyle}>
+          <div style={{ color: "#ff4d4d", fontSize: "12px", marginTop: "10px", textAlign: "center", lineHeight: "1.6" }}>
             {errorMessage}
             <br />
             <span 
@@ -61,18 +56,9 @@ export default function EmailStep({ email, setEmail, onNext }) {
           </div>
         )}
       </div>
-
       <button type="submit" disabled={isLoading}>
         {isLoading ? "발송 중..." : "인증번호 받기"}
       </button>
     </form>
   );
 }
-
-const errorTextStyle = {
-  color: "#ff4d4d",
-  fontSize: "12px",
-  marginTop: "10px",
-  textAlign: "center",
-  lineHeight: "1.6"
-};

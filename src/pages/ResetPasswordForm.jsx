@@ -3,7 +3,7 @@ import EmailStep from './EmailStep';
 import VerifyStep from './VerifyStep';
 import NewPasswordStep from './NewPasswordStep';
 import './ResetPassword.css';
-import Input from '../components/Inputtype';
+import { verifyEmailApi } from '../utils/axiosInstance'; 
 
 export default function ResetPasswordForm({ onBack }) {
   const [step, setStep] = useState(1);
@@ -23,33 +23,52 @@ export default function ResetPasswordForm({ onBack }) {
 
   const formatTime = (s) => `${Math.floor(s/60)}:${(s%60).toString().padStart(2, '0')}`;
 
-  const handleSendCode = (e) => {
-    e.preventDefault();
-    if (!/^[a-zA-Z0-9._%+-]+@gsm\.hs\.kr$/.test(email)) {
-      return alert("이메일을 확인해주세요! 사용할 수 없는 이메일이에요! ");
-    }
-    alert('인증번호 발송!');
+  const handleSendCodeSuccess = () => {
     setTimeLeft(180);
     setStep(2);
+  };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    try {
+      // ⭐ 수정 포인트: authCode를 서버가 원하는 'code'라는 이름으로 전달합니다.
+      const response = await verifyEmailApi(email, authCode); 
+      if (response.status === 200) {
+        alert("인증 성공!");
+        setStep(3);
+      }
+    } catch (error) {
+      alert("인증번호가 틀렸거나 만료되었습니다.");
+    }
   };
 
   return (
     <div id="resetPasswordContainer">
       <div className="welcome-text">비밀번호 재설정</div>
 
-      {step === 1 && <EmailStep email={email} setEmail={setEmail} onNext={handleSendCode} />}
+      {step === 1 && (
+        <EmailStep 
+          email={email} 
+          setEmail={setEmail} 
+          onNext={handleSendCodeSuccess} 
+        />
+      )}
       
       {step === 2 && (
         <VerifyStep 
           authCode={authCode} setAuthCode={setAuthCode} 
           timeLeft={timeLeft} formatTime={formatTime} 
-          onNext={(e) => { e.preventDefault(); setStep(3); }} 
+          onNext={handleVerifyCode} 
           onResend={() => setTimeLeft(180)} 
         />
       )}
       
-      {step === 3 && <NewPasswordStep onFinish={() => { alert('변경 완료!'); onBack(); }} />}
-
+      {step === 3 && (
+        <NewPasswordStep 
+          email={email} 
+          onFinish={() => { alert('비밀번호가 성공적으로 변경되었습니다!'); onBack(); }} 
+        />
+      )}
     </div>
   );
 }

@@ -39,18 +39,28 @@ export default function MyPage() {
 
     const fetchData = async () => {
       try {
+        // 1. 이름 정보 가져오기 (회원 조회 API 호출)
         const userRes = await getUserListApi(); 
         let currentUsername = "사용자";
 
-        if (Array.isArray(userRes.data)) {
-          const myInfo = userRes.data.find(user => user.email === myEmail);
-          currentUsername = myInfo?.username || myInfo?.nickname || "사용자";
-        } else if (userRes.data?.username) {
-          currentUsername = userRes.data.username;
+        // 데이터가 배열인지 확인 후 내 정보 필터링
+        const userList = Array.isArray(userRes.data) ? userRes.data : userRes.data?.data;
+
+        if (Array.isArray(userList)) {
+          const myInfo = userList.find(user => 
+            user.email?.trim().toLowerCase() === myEmail?.trim().toLowerCase()
+          );
+          
+          if (myInfo) {
+            currentUsername = myInfo.username || myInfo.nickname || "사용자";
+          } else {
+            currentUsername = "정보 없음";
+          }
         }
         
         setUserName(currentUsername);
 
+        // 2. 타이머 기록 로직 (기존 유지)
         const timerRes = await getTimerListApi(); 
         if (timerRes.data && Array.isArray(timerRes.data)) {
           const allRecords = timerRes.data;
@@ -75,12 +85,8 @@ export default function MyPage() {
           setSortedRanking(rankingBoxes);
         }
       } catch (error) {
-        console.error("❌ 데이터 로드 중 에러 발생:", error);
-        if (error.response?.status === 403) {
-          setUserName("접근 권한 없음");
-        } else {
-          setUserName("서버 연결 실패");
-        }
+        console.error("❌ 데이터 로드 에러:", error);
+        setUserName("사용자");
       }
     };
     
@@ -115,7 +121,6 @@ export default function MyPage() {
             <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
-                {/* 뜬 눈/감긴 눈 모두 grey-icon을 적용해 회색으로 유지 */}
                 <img src={isPublic ? groupOpenIcon : groupIcon} alt="eye" className="toggle-icon-img grey-icon" />
                 <div className="toggle-text">
                   <p className="toggle-title">공부 시간 {isPublic ? "공개" : "비공개"}</p>
@@ -144,8 +149,8 @@ export default function MyPage() {
                   <StudyRecordCard 
                     key={index}
                     nickname={item.nickname} 
-                    time={item.time}          
-                    date={item.date}          
+                    time={item.time}           
+                    date={item.date}           
                   />
                 ))
               ) : (
