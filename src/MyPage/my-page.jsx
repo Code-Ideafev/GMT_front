@@ -153,7 +153,7 @@ export default function MyPage() {
                 <div className="toggle-text">
                   <p className="toggle-title">공부 시간 {isPublic ? "공개" : "비공개"}</p>
                   <p className="toggle-desc">
-                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "공부 시간이 비공개로 설정되어 있습니다"}
+                    {isPublic ? "다른 사람들이 내 공부 시간을 볼 수 있습니다" : "다른 사람들이 내 공부 시간을 볼 수 없습니다"}
                   </p>
                 </div>
               </div>
