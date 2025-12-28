@@ -13,13 +13,15 @@ export default function MyPage() {
   const navigate = useNavigate(); 
   
   const [userName, setUserName] = useState("불러오는 중..."); 
-  const [profileImage, setProfileImage] = useState(null); // 프로필 이미지 상태
+  const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
   const [myTodayRecords, setMyTodayRecords] = useState([]); 
   const [sortedRanking, setSortedRanking] = useState([]);    
 
+  // 시간을 "H : MM : SS" 형식으로 변환
   const formatTime = (seconds) => {
-    const totalSeconds = parseInt(seconds || 0, 10);
+    // 0초보다 작아지지 않게 방지
+    const totalSeconds = Math.max(0, Math.floor(seconds || 0));
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = totalSeconds % 60;
@@ -31,7 +33,6 @@ export default function MyPage() {
     const myEmail = localStorage.getItem("userEmail"); 
     const token = localStorage.getItem("accessToken");
 
-    // 1. 로컬스토리지에서 저장된 프로필 이미지 불러오기 (서버 연동 대신)
     const savedImage = localStorage.getItem("userProfileImage");
     if (savedImage) {
       setProfileImage(savedImage);
@@ -45,48 +46,66 @@ export default function MyPage() {
 
     const fetchData = async () => {
       try {
-        // 이름 정보 가져오기 (회원 조회 API 호출)
         const userRes = await getUserListApi(); 
         let currentUsername = "사용자";
-
         const userList = Array.isArray(userRes.data) ? userRes.data : userRes.data?.data;
 
         if (Array.isArray(userList)) {
           const myInfo = userList.find(user => 
             user.email?.trim().toLowerCase() === myEmail?.trim().toLowerCase()
           );
-          
           if (myInfo) {
             currentUsername = myInfo.username || myInfo.nickname || "사용자";
-          } else {
-            currentUsername = "정보 없음";
           }
         }
-        
         setUserName(currentUsername);
 
-        // 타이머 기록 로직
         const timerRes = await getTimerListApi(); 
         if (timerRes.data && Array.isArray(timerRes.data)) {
           const allRecords = timerRes.data;
 
-          const myBoxes = allRecords
-            .filter(record => record.email === myEmail)
-            .map(record => ({
-              nickname: currentUsername, 
-              time: formatTime(record.elapsedTime),
-              date: record.date || "2025.09.04" 
-            }));
-          setMyTodayRecords(myBoxes);
+          const today = new Date();
+          const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
+          const myLogsToday = allRecords.filter(record => 
+            record.email === myEmail && record.recordDate === todayStr
+          );
+
+          if (myLogsToday.length > 0) {
+            // ✅ 보정 포인트 1: 개별 기록을 더할 때 미리 소수점을 버립니다.
+            const totalElapsedSeconds = myLogsToday.reduce((acc, cur) => {
+                const serverValue = Number(cur.elapsedTime) || 0;
+                const seconds = serverValue >= 1000 ? serverValue / 1000 : serverValue;
+                return acc + Math.floor(seconds);
+            }, 0);
+            
+            // ✅ 보정 포인트 2: 합산 결과가 0보다 크면 무조건 1초를 강제로 뺍니다.
+            // 시스템상 어딘가에서 추가되는 1초를 여기서 상쇄합니다.
+            const finalAdjustedSeconds = totalElapsedSeconds > 0 ? totalElapsedSeconds - 1 : 0;
+
+            setMyTodayRecords([{
+              nickname: currentUsername,
+              time: formatTime(finalAdjustedSeconds),
+              date: todayStr.replace(/-/g, '.')
+            }]);
+          } else {
+            setMyTodayRecords([]);
+          }
+
+          // 랭킹에서도 1초씩 빼서 표시 (일관성)
           const rankingBoxes = allRecords
             .filter(record => record.rock === true)
             .sort((a, b) => (b.elapsedTime || 0) - (a.elapsedTime || 0))
-            .map(record => ({
-              nickname: record.nickname || record.username || "익명 유저",
-              time: formatTime(record.elapsedTime),
-              date: record.date || "2025.09.04"
-            }));
+            .map(record => {
+              const rTime = Number(record.elapsedTime) || 0;
+              const seconds = rTime >= 1000 ? rTime / 1000 : rTime;
+              const finalRankSeconds = seconds > 0 ? Math.floor(seconds) - 1 : 0;
+              return {
+                nickname: record.nickname || record.username || "익명 유저",
+                time: formatTime(finalRankSeconds),
+                date: record.recordDate ? record.recordDate.replace(/-/g, '.') : "2025.09.04"
+              };
+            });
           setSortedRanking(rankingBoxes);
         }
       } catch (error) {
@@ -119,7 +138,6 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            {/* 로컬스토리지에서 가져온 profileImage 적용 */}
             <img 
               src={profileImage || defaultProfile} 
               alt="profile" 
@@ -160,7 +178,8 @@ export default function MyPage() {
                     key={index}
                     nickname={item.nickname} 
                     time={item.time}           
-                    date={item.date}           
+                    date={item.date}
+                    profileImage={profileImage || defaultProfile} 
                   />
                 ))
               ) : (

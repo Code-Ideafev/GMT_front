@@ -1,21 +1,16 @@
-import React, { memo } from "react"; // 1. memo 추가
+import React, { memo } from "react"; 
 import "./StudyRecordCard.css";
 import defaultProfile from "../MyPage/Group 92.svg"; 
 
-// 2. profileImage를 props로 직접 받도록 수정
 function StudyRecordCard({ 
   time = "0 : 00 : 00", 
   date = "2025.00.00", 
   isEditMode = false, 
   onUploadClick, 
   onResetClick,
-  isMine = false, 
-  userName = "이름 없음",
-  profileImage // 👈 MyPage에서 전달받을 프로필 이미지
+  nickname = "이름 없음", // MyPage의 item.nickname과 맞춤
+  profileImage          // MyPage에서 전달받은 이미지 (로컬스토리지 값)
 }) {
-  //흠
-
-  // 3. 내부의 localStorage.getItem 제거 (성능 최적화 핵심)
 
   return (
     <>
@@ -23,16 +18,26 @@ function StudyRecordCard({
         <div className="record-card">
           <div className="card-left-section">
             <div className="user-profile-circle">
-              {isMine ? (
-                // 부모로부터 받은 profileImage를 바로 사용
-                <img src={profileImage || defaultProfile} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '100%', height: '100%', backgroundColor: '#D9D9D9' }} />
-              )}
+              {/* 프로필 이미지가 있으면 보여주고, 없으면 기본 회색이나 기본 아이콘 표시 */}
+              <img 
+                src={profileImage || defaultProfile} 
+                alt="profile" 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover',
+                  borderRadius: '50%' 
+                }} 
+              />
             </div> 
-            <span className="user-record-name">{userName}</span>
+            {/* 닉네임 표시 */}
+            <span className="user-record-name">{nickname}</span>
           </div>
+          
+          {/* 누적 시간 */}
           <span className="record-time">{time}</span>
+          
+          {/* 날짜 */}
           <span className="record-date">{date}</span>
         </div>
       ) : (
@@ -48,5 +53,5 @@ function StudyRecordCard({
   );
 }
 
-// 4. memo로 감싸서 export (데이터가 안 바뀌면 다시 안 그려지게 함)
+// 데이터 변경이 없을 때 불필요한 재렌더링을 방지하기 위해 memo 사용
 export default memo(StudyRecordCard);
