@@ -13,7 +13,7 @@ export default function MyPage() {
   const navigate = useNavigate(); 
   
   const [userName, setUserName] = useState("불러오는 중..."); 
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImage, setProfileImage] = useState(null); // 프로필 이미지 상태
   const [isPublic, setIsPublic] = useState(false);
   const [myTodayRecords, setMyTodayRecords] = useState([]); 
   const [sortedRanking, setSortedRanking] = useState([]);    
@@ -31,6 +31,12 @@ export default function MyPage() {
     const myEmail = localStorage.getItem("userEmail"); 
     const token = localStorage.getItem("accessToken");
 
+    // 1. 로컬스토리지에서 저장된 프로필 이미지 불러오기 (서버 연동 대신)
+    const savedImage = localStorage.getItem("userProfileImage");
+    if (savedImage) {
+      setProfileImage(savedImage);
+    }
+
     if (!token) {
       alert("로그인이 필요합니다.");
       navigate("/login");
@@ -39,11 +45,10 @@ export default function MyPage() {
 
     const fetchData = async () => {
       try {
-        // 1. 이름 정보 가져오기 (회원 조회 API 호출)
+        // 이름 정보 가져오기 (회원 조회 API 호출)
         const userRes = await getUserListApi(); 
         let currentUsername = "사용자";
 
-        // 데이터가 배열인지 확인 후 내 정보 필터링
         const userList = Array.isArray(userRes.data) ? userRes.data : userRes.data?.data;
 
         if (Array.isArray(userList)) {
@@ -60,7 +65,7 @@ export default function MyPage() {
         
         setUserName(currentUsername);
 
-        // 2. 타이머 기록 로직 (기존 유지)
+        // 타이머 기록 로직
         const timerRes = await getTimerListApi(); 
         if (timerRes.data && Array.isArray(timerRes.data)) {
           const allRecords = timerRes.data;
@@ -114,7 +119,12 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {/* 로컬스토리지에서 가져온 profileImage 적용 */}
+            <img 
+              src={profileImage || defaultProfile} 
+              alt="profile" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            />
           </div>
           <div className="profile-info-side">
             <span className="user-name">{userName}</span> 

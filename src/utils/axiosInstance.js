@@ -24,7 +24,6 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // 통신 에러 발생 시 로그 출력
     console.error('⚠️ 통신 에러 발생:', error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
@@ -33,12 +32,8 @@ axiosInstance.interceptors.response.use(
 // --- API 함수 리스트 ---
 export const signUpApi = (data) => axiosInstance.post('/auth/join', data);
 export const loginApi = (data) => axiosInstance.post('/auth/login', data);
-
-// ⭐ [필수 추가] 이 줄이 있어야 image_efc585 에러가 사라집니다!
 export const resetPasswordApi = (data) => axiosInstance.post('/auth/reset-password', data);
-
 export const sendEmailApi = (email) => axiosInstance.post('/email/send', { email });
-// 인증번호 확인 API
 export const verifyEmailApi = (email, code) => axiosInstance.post('/email/verify', { email, code });
 
 // 타이머 관련
@@ -48,5 +43,10 @@ export const stopTimerApi = () => axiosInstance.get('/timer/endTime');
 // 마이페이지 데이터 관련
 export const getUserListApi = () => axiosInstance.get('/auth/list'); 
 export const getTimerListApi = () => axiosInstance.get('/timer/list');
+
+// ⭐ [중요] 빠져있던 프로필 수정 API 다시 추가
+export const updateProfileApi = (imageUrl) => axiosInstance.post('/user/profile', {
+  profileImageUrl: imageUrl
+});
 
 export default axiosInstance;
