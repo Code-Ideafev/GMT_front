@@ -19,7 +19,6 @@ export default function EmailStep({ email, setEmail, onNext }) {
 
     setIsLoading(true);
     try {
-      // 수빈이 명세서대로 email을 보냅니다.
       await sendEmailApi(email);
       alert("인증번호가 발송되었습니다.");
       onNext(); 
@@ -36,13 +35,18 @@ export default function EmailStep({ email, setEmail, onNext }) {
 
   return (
     <form className="login-box" onSubmit={handleSubmit}>
+      
       <div style={{ marginBottom: "15px", textAlign: "left", width: "100%" }}>
         <Input 
-          type="email" 
+          list="reset-email-options"
           placeholder="학교 이메일을 입력하세요 (@gsm.hs.kr)" 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <datalist id="reset-email-options">
+          {email && !email.includes('@') && <option value={`${email}@gsm.hs.kr`} />}
+        </datalist>
+
         {errorMessage && (
           <div style={{ color: "#ff4d4d", fontSize: "12px", marginTop: "10px", textAlign: "center", lineHeight: "1.6" }}>
             {errorMessage}
@@ -56,6 +60,7 @@ export default function EmailStep({ email, setEmail, onNext }) {
           </div>
         )}
       </div>
+
       <button type="submit" disabled={isLoading}>
         {isLoading ? "발송 중..." : "인증번호 받기"}
       </button>
