@@ -1,4 +1,4 @@
-import React, { memo } from "react"; 
+import { memo } from "react"; 
 import "./StudyRecordCard.css";
 import defaultProfile from "../MyPage/Group 92.svg"; 
 
@@ -11,7 +11,7 @@ function StudyRecordCard({
   nickname = "이름 없음", // MyPage의 item.nickname과 맞춤
   profileImage          // MyPage에서 전달받은 이미지 (로컬스토리지 값)
 }) {
-
+  console.log(nickname+":"+profileImage)
   return (
     <>
       {!isEditMode ? (

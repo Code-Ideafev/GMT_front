@@ -77,8 +77,7 @@ export default function MyPage() {
                 isThisUserPublic = false;
               }
             }
-
-            if (isThisUserPublic) {
+              if (isThisUserPublic) {
               const val = Number(record.elapsedTime) || 0;
               const seconds = Math.floor(val >= 1000 ? val / 1000 : val);
               
@@ -90,7 +89,8 @@ export default function MyPage() {
                   username: userDetail.username || "익명", 
                   totalSeconds: seconds,
                   // ⭐ 포인트: 내가 랭킹에 있다면 내 이미지를, 타인이면 타인의 이미지를 매칭
-                  userImg: rEmail === myEmail ? myCurrentImg : (userDetail.profileImage || defaultProfile)
+                  
+                  userImg: userDetail.email === myEmail ? myCurrentImg : (userDetail.profileImageUrl)
                 });
               }
             }
