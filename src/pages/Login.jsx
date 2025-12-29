@@ -10,7 +10,7 @@ import { loginApi } from '../utils/axiosInstance';
 
 export default function Login() {
   const [view, setView] = useState('login');
-  const [email, setEmail] = useState('');
+  const [emailId, setEmailId] = useState(''); // 아이디 부분만 관리
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); 
 
@@ -27,26 +27,23 @@ export default function Login() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault(); 
-    
-    // 이메일 형식이 맞는지 간단히 체크 (추천 기능을 쓰므로 입력된 값 그대로 전송)
-    if (!email.includes('@gsm.hs.kr')) {
-      alert("학교 이메일(@gsm.hs.kr) 형식을 확인해주세요.");
-      return;
-    }
+    const fullEmail = `${emailId}@gsm.hs.kr`; // 서버로 보낼 때 결합
 
     try {
-      const response = await loginApi({ email, password });
+      const response = await loginApi({ email: fullEmail, password });
       if (response.status === 200) {
         const token = response.data.accessToken || response.data.token; 
         if (token) {
           localStorage.setItem('accessToken', token); 
-          localStorage.setItem('userEmail', email); 
+          localStorage.setItem('userEmail', fullEmail); 
+          console.log("토큰 및 이메일 저장 성공");
         }
         alert('로그인에 성공했습니다!');
         navigate('/timer'); 
       }
     } catch (error) {
-      alert('로그인 실패: 아이디 또는 비밀번호를 확인해주세요.');
+      console.error('로그인 에러:', error);
+      alert('로그인 실패: 아이디 또는 비밀번호를 확인하거나 서버 연결을 확인해주세요.');
     }
   };
 
@@ -56,17 +53,22 @@ export default function Login() {
         <div id="loginContainer">
           <img src={logo} className="logo" alt="logo" />
           <form className="login-box" onSubmit={handleLoginSubmit}>
-            <Input 
-              list="login-email-options"
-              placeholder="학교 이메일을 입력하세요" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <datalist id="login-email-options">
-              {email && !email.includes('@') && <option value={`${email}@gsm.hs.kr`} />}
-            </datalist>
+            {/* 도메인 고정 입력창 */}
+            <div style={{ position: 'relative', width: '100%' }}>
+              <Input 
+                type="text" 
+                placeholder="학교 아이디 입력" 
+                value={emailId}
+                onChange={(e) => setEmailId(e.target.value.split('@')[0])}
+                style={{ paddingRight: '100px' }}
+              />
+              <span style={{ position: 'absolute', right: '15px', top: '40%', transform: 'translateY(-50%)', color: '#aaa', fontSize: '14px', pointerEvents: 'none' }}>
+                @gsm.hs.kr
+              </span>
+            </div>
             
             <PasswordField 
+              id="password" 
               placeholder="비밀번호를 입력하세요" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -79,6 +81,7 @@ export default function Login() {
           </form>
         </div>
       )}
+
       {view === 'signup' && <SignupForm onBack={() => setView('login')} />}
       {view === 'reset' && <ResetPasswordForm onBack={() => setView('login')} />}
     </div>
