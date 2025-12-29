@@ -13,9 +13,9 @@ export default function SingupForm({ onBack }) {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
 
-  // 유효성 검사 로직
+  // 1. 유효성 검사 로직 수정 (정규식: 영어+특수문자 포함 8자 이상)
   const isEmailInvalid = email.length > 0 && !email.endsWith('@gsm.hs.kr');
-  const isPasswordInvalid = password.length > 0 && !/^\d{4}$/.test(password);
+  const isPasswordInvalid = password.length > 0 && !/^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-]).{8,}$/.test(password);
   const isConfirmInvalid = confirmPassword.length > 0 && password !== confirmPassword;
 
   const handleSignUp = async (e) => {
@@ -45,7 +45,6 @@ export default function SingupForm({ onBack }) {
 
       if (response.status === 200 || response.status === 201) {
         alert("회원가입 성공! 로그인 해주세요.");
-        // ⭐ 중요: 타이머로 가지 않고 로그인 화면(onBack)으로 돌아갑니다.
         onBack(); 
       }
     } catch (error) {
@@ -66,16 +65,28 @@ export default function SingupForm({ onBack }) {
           {isEmailInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>학교 이메일(@gsm.hs.kr) 형식을 확인해주세요!</div>}
         </div>
         
+        {/* 비밀번호 설정 영역 */}
         <div style={{ width: '100%', textAlign: 'left' }}>
           <PasswordField id="signupPassword" placeholder="비밀번호 설정" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {isPasswordInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>4자리의 숫자 조합으로 비밀번호를 생성해주세요!</div>}
+          {/* 2. 빨간색 경고 문구 적용 */}
+          {isPasswordInvalid && (
+            <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px', lineHeight: '1.4'}}>
+              영문, 특수문자 숫자를 포함하여 8자 이상으로 설정해주세요!
+            </div>
+          )}
         </div>
 
+        {/* 비밀번호 확인 영역 */}
         <div style={{ width: '100%', textAlign: 'left' }}>
           <PasswordField id="signupPasswordConfirm" placeholder="비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-          {isConfirmInvalid && <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>비밀번호가 일치하지 않아요!</div>}
+          {isConfirmInvalid && (
+            <div style={{color: '#ff4d4d', fontSize: '12px', marginTop: '-12px', marginBottom: '15px', paddingLeft: '5px'}}>
+              비밀번호가 일치하지 않아요!
+            </div>
+          )}
         </div>
 
+        {/* 개인정보 동의 영역 (기존 코드와 동일) */}
         <div className="privacy-container">
           <div className="privacy-header" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)} style={{cursor: 'pointer'}}>
             <span>개인정보 수집 및 이용 안내</span>
@@ -102,9 +113,9 @@ export default function SingupForm({ onBack }) {
           </div>
         </div>
 
-        <button type="submit">확인</button>
+        {/* 버튼 비활성화 로직 추가 */}
+        <button type="submit" disabled={isPasswordInvalid || isConfirmInvalid || !isAgreed}>확인</button>
       </form>
     </div>
   );
 }
-//헤헤성공
