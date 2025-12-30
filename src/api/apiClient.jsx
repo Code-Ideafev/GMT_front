@@ -36,4 +36,9 @@ export const getTimerListApi = () => axiosInstance.get('/timer/list');
 export const setPublicApi = () => axiosInstance.get('/timer/set-public');
 export const setPrivateApi = () => axiosInstance.get('/timer/set-private');
 
+// ✅ [추가] 프로필 이미지 수정 API (PUT 방식, String 전송)
+export const updateProfileApi = (imageData) => axiosInstance.put('/auth/me/profile', {
+  profileImageUrl: imageData
+});
+
 export default axiosInstance;

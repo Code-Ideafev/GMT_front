@@ -13,9 +13,9 @@ export default function MyPage() {
   const navigate = useNavigate(); 
   
   const [userName, setUserName] = useState("불러오는 중..."); 
-  const [profileImage, setProfileImage] = useState(null); // 내 프로필 이미지 상태
+  const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(true); 
-  const [myTodayRecords, setMyTodayRecords] = useState([]); 
+  const [myHistoryRecords, setMyHistoryRecords] = useState([]); // ✅ 이름 변경: 오늘뿐만 아니라 전체 기록
   const [sortedRanking, setSortedRanking] = useState([]);
 
   const formatTime = (seconds) => {
@@ -38,29 +38,25 @@ export default function MyPage() {
 
       const now = new Date();
       const todayDash = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      const todayDot = todayDash.replace(/-/g, '.');
 
       // 1. 내 정보 설정
       const myInfo = userList.find(u => u.email?.trim().toLowerCase() === myEmail);
       const localRockMode = localStorage.getItem("my_rockMode");
-      const localProfileImg = localStorage.getItem("userProfileImage"); // 프로필 수정에서 저장한 로컬 값
+      const localProfileImg = localStorage.getItem("userProfileImage");
       
       let currentMyPublicStatus = true;
-      let myCurrentImg = defaultProfile; // 내 이미지 변수 선언
+      let myCurrentImg = defaultProfile;
 
       if (myInfo) {
         setUserName(myInfo.username || "사용자");
         currentMyPublicStatus = localRockMode !== null ? localRockMode === "true" : true;
         setIsPublic(currentMyPublicStatus);
-        
-        // 내 이미지는 서버값 우선 -> 없으면 로컬스토리지 백업 -> 없으면 기본 이미지
         myCurrentImg = myInfo.profileImage || localProfileImg || defaultProfile;
         setProfileImage(myCurrentImg);
       }
 
+      // 2. 랭킹 집계 (오늘 날짜 기준)
       const rankingMap = new Map();
-
-      // 2. 랭킹 집계 및 사용자별 이미지 매칭
       allRecords.forEach(record => {
         if (record.recordDate === todayDash) {
           const rEmail = record.email?.trim().toLowerCase();
@@ -73,11 +69,9 @@ export default function MyPage() {
             } else {
               const rawMode = userDetail.rockMode;
               isThisUserPublic = (rawMode === true || rawMode === "true");
-              if (rawMode === false || rawMode === "false") {
-                isThisUserPublic = false;
-              }
             }
-              if (isThisUserPublic) {
+
+            if (isThisUserPublic) {
               const val = Number(record.elapsedTime) || 0;
               const seconds = Math.floor(val >= 1000 ? val / 1000 : val);
               
@@ -88,9 +82,7 @@ export default function MyPage() {
                 rankingMap.set(rEmail, { 
                   username: userDetail.username || "익명", 
                   totalSeconds: seconds,
-                  // ⭐ 포인트: 내가 랭킹에 있다면 내 이미지를, 타인이면 타인의 이미지를 매칭
-                  
-                  userImg: userDetail.email === myEmail ? myCurrentImg : (userDetail.profileImageUrl)
+                  userImg: userDetail.email === myEmail ? myCurrentImg : (userDetail.profileImageUrl || defaultProfile)
                 });
               }
             }
@@ -98,44 +90,56 @@ export default function MyPage() {
         }
       });
 
-      // 3. 랭킹 데이터 정렬 및 상태 반영
       const rankingData = Array.from(rankingMap.values())
         .sort((a, b) => b.totalSeconds - a.totalSeconds)
         .slice(0, 3)
         .map(user => ({
           nickname: user.username,
           time: formatTime(user.totalSeconds),
-          date: todayDot,
-          profileImage: user.userImg // 여기서 매칭된 각자의 이미지가 카드에 전달됨
+          date: todayDash.replace(/-/g, '.'),
+          profileImage: user.userImg
         }));
 
       setSortedRanking(rankingData);
 
-      // 4. 내 오늘 기록 카드 설정
-      const myTotalSec = allRecords
-        .filter(r => r.email?.trim().toLowerCase() === myEmail && r.recordDate === todayDash)
-        .reduce((acc, cur) => {
-          const v = Number(cur.elapsedTime) || 0;
-          return acc + Math.floor(v >= 1000 ? v / 1000 : v);
-        }, 0);
+      // 3. ✅ 내 누적 공부시간 (날짜별 그룹화 핵심 로직)
+      const historyMap = new Map();
 
-      setMyTodayRecords(myTotalSec > 0 ? [{
-        nickname: myInfo?.username || "사용자",
-        time: formatTime(myTotalSec),
-        date: todayDot,
-        profileImage: myCurrentImg // 내 이미지 적용
-      }] : []);
+      allRecords
+        .filter(r => r.email?.trim().toLowerCase() === myEmail)
+        .forEach(record => {
+          const date = record.recordDate; // "2024-05-20"
+          const val = Number(record.elapsedTime) || 0;
+          const seconds = Math.floor(val >= 1000 ? val / 1000 : val);
+
+          if (historyMap.has(date)) {
+            historyMap.set(date, historyMap.get(date) + seconds);
+          } else {
+            historyMap.set(date, seconds);
+          }
+        });
+
+      const historyData = Array.from(historyMap.entries())
+        .map(([date, totalSec]) => ({
+          nickname: myInfo?.username || "사용자",
+          time: formatTime(totalSec),
+          date: date.replace(/-/g, '.'),
+          profileImage: myCurrentImg,
+          rawDate: new Date(date) // 정렬을 위해 추가
+        }))
+        .sort((a, b) => b.rawDate - a.rawDate); // 최신 날짜순 정렬
+
+      setMyHistoryRecords(historyData);
 
     } catch (error) {
       console.error("데이터 로드 실패:", error);
     }
-  }, []); // userName 의존성을 제거하여 무한 루프 방지
+  }, []);
 
   const handleTogglePublic = async () => {
     const nextStatus = !isPublic;
     setIsPublic(nextStatus);
     localStorage.setItem("my_rockMode", String(nextStatus));
-
     try {
       if (nextStatus) await setPublicApi();
       else await setPrivateApi();
@@ -154,11 +158,10 @@ export default function MyPage() {
   return (
     <div className="mypage-container">
       <div className="header-area">
-        <div className="icon-wrapper" onClick={() => navigate("/timer")}> 
+        <div className="icon-wrapper" onClick={() => navigate("/timer")} style={{cursor: 'pointer'}}> 
           <button className="clock-btn">
             <div className="icon-stack">
               <img src={clockIcon} alt="history" className="clock-img base" />
-              <img src={clockIcon} alt="history" className="clock-img hover" />
             </div>
           </button>
           <span className="back-text">돌아가기</span>
@@ -168,7 +171,6 @@ export default function MyPage() {
       <div className="profile-section">
         <div className="profile-content">
           <div className="profile-image-circle">
-            {/* 상단 프로필 영역 내 이미지 */}
             <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
           </div>
           <div className="profile-info-side">
@@ -197,18 +199,18 @@ export default function MyPage() {
           <div className="study-section">
             <h2 className="section-title">내 누적 공부시간</h2>
             <div className="record-list">
-              {myTodayRecords.length > 0 ? (
-                myTodayRecords.map((item, index) => (
+              {myHistoryRecords.length > 0 ? (
+                myHistoryRecords.map((item, index) => (
                   <StudyRecordCard 
                     key={index} 
                     nickname={item.nickname} 
                     time={item.time} 
                     date={item.date} 
-                    profileImage={item.profileImage} // 내 이미지가 Card로 전달됨
+                    profileImage={item.profileImage}
                   />
                 ))
               ) : (
-                <p className="empty-msg">오늘 공부 한 기록이 없습니다.</p>
+                <p className="empty-msg">기록이 없습니다.</p>
               )}
             </div>
           </div>
@@ -230,7 +232,7 @@ export default function MyPage() {
                         nickname={item.nickname} 
                         time={item.time} 
                         date={item.date} 
-                        profileImage={item.profileImage} // 각 사용자별(나 포함) 이미지가 Card로 전달됨
+                        profileImage={item.profileImage} 
                      />
                   </div>
                 ))
