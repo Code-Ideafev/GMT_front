@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./my-page.css";
 import StudyRecordCard from "../components/StudyRecordCard";
 import clockIcon from "./Vector.svg";
-import groupIcon from "./Group.svg";       
+import groupIcon from "./Group.svg";        
 import groupOpenIcon from "./Group 67.svg"; 
 import defaultProfile from "./Group 92.svg"; 
 import crownIcon from "./Vector5.svg"; 
@@ -15,7 +15,7 @@ export default function MyPage() {
   const [userName, setUserName] = useState("불러오는 중..."); 
   const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(true); 
-  const [myHistoryRecords, setMyHistoryRecords] = useState([]); // ✅ 이름 변경: 오늘뿐만 아니라 전체 기록
+  const [myHistoryRecords, setMyHistoryRecords] = useState([]); 
   const [sortedRanking, setSortedRanking] = useState([]);
 
   const formatTime = (seconds) => {
@@ -24,6 +24,18 @@ export default function MyPage() {
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = totalSeconds % 60;
     return `${h} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
+  };
+
+  // ✅ 로그아웃 기능
+  const handleLogout = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("my_rockMode");
+      localStorage.removeItem("userProfileImage");
+      alert("로그아웃 되었습니다.");
+      navigate("/"); 
+    }
   };
 
   const fetchData = useCallback(async () => {
@@ -39,7 +51,6 @@ export default function MyPage() {
       const now = new Date();
       const todayDash = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-      // 1. 내 정보 설정
       const myInfo = userList.find(u => u.email?.trim().toLowerCase() === myEmail);
       const localRockMode = localStorage.getItem("my_rockMode");
       const localProfileImg = localStorage.getItem("userProfileImage");
@@ -55,7 +66,6 @@ export default function MyPage() {
         setProfileImage(myCurrentImg);
       }
 
-      // 2. 랭킹 집계 (오늘 날짜 기준)
       const rankingMap = new Map();
       allRecords.forEach(record => {
         if (record.recordDate === todayDash) {
@@ -102,13 +112,11 @@ export default function MyPage() {
 
       setSortedRanking(rankingData);
 
-      // 3. ✅ 내 누적 공부시간 (날짜별 그룹화 핵심 로직)
       const historyMap = new Map();
-
       allRecords
         .filter(r => r.email?.trim().toLowerCase() === myEmail)
         .forEach(record => {
-          const date = record.recordDate; // "2024-05-20"
+          const date = record.recordDate;
           const val = Number(record.elapsedTime) || 0;
           const seconds = Math.floor(val >= 1000 ? val / 1000 : val);
 
@@ -125,9 +133,9 @@ export default function MyPage() {
           time: formatTime(totalSec),
           date: date.replace(/-/g, '.'),
           profileImage: myCurrentImg,
-          rawDate: new Date(date) // 정렬을 위해 추가
+          rawDate: new Date(date)
         }))
-        .sort((a, b) => b.rawDate - a.rawDate); // 최신 날짜순 정렬
+        .sort((a, b) => b.rawDate - a.rawDate);
 
       setMyHistoryRecords(historyData);
 
@@ -174,7 +182,12 @@ export default function MyPage() {
             <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
           </div>
           <div className="profile-info-side">
-            <span className="user-name">{userName}</span> 
+            {/* ⭐ 이름 옆에 로그아웃 버튼 배치 */}
+            <div className="user-info-header">
+              <span className="user-name">{userName}</span> 
+              <button className="logout-small-btn" onClick={handleLogout}>로그아웃</button>
+            </div>
+
             <button className="edit-profile-btn" onClick={() => navigate("/EditProfile")}>프로필 편집</button>
             <div className={`toggle-bar ${isPublic ? "is-public" : ""}`}>
               <div className="toggle-content-wrapper">
@@ -201,13 +214,7 @@ export default function MyPage() {
             <div className="record-list">
               {myHistoryRecords.length > 0 ? (
                 myHistoryRecords.map((item, index) => (
-                  <StudyRecordCard 
-                    key={index} 
-                    nickname={item.nickname} 
-                    time={item.time} 
-                    date={item.date} 
-                    profileImage={item.profileImage}
-                  />
+                  <StudyRecordCard key={index} nickname={item.nickname} time={item.time} date={item.date} profileImage={item.profileImage} />
                 ))
               ) : (
                 <p className="empty-msg">기록이 없습니다.</p>
@@ -221,19 +228,8 @@ export default function MyPage() {
               {sortedRanking.length > 0 ? (
                 sortedRanking.map((item, index) => (
                   <div key={index} className={`rank-item-box rank-${index + 1}`} style={{ position: 'relative' }}>
-                     {index === 0 && (
-                       <img 
-                         src={crownIcon} 
-                         alt="crown" 
-                         style={{ position: 'absolute', top: '-45px', left: '19px', zIndex: 10, width: '64px', height: '44px' }} 
-                       />
-                     )}
-                     <StudyRecordCard 
-                        nickname={item.nickname} 
-                        time={item.time} 
-                        date={item.date} 
-                        profileImage={item.profileImage} 
-                     />
+                     {index === 0 && <img src={crownIcon} alt="crown" style={{ position: 'absolute', top: '-45px', left: '19px', zIndex: 10, width: '64px', height: '44px' }} />}
+                     <StudyRecordCard nickname={item.nickname} time={item.time} date={item.date} profileImage={item.profileImage} />
                   </div>
                 ))
               ) : (

@@ -18,6 +18,7 @@ export default function EmailStep({ email, setEmail, onNext }) {
       return;
     }
 
+    // 💡 사용자가 입력한 아이디 뒤에 서버가 요구하는 도메인을 자동으로 결합
     const fullEmail = `${emailId}@gsm.hs.kr`;
 
     setIsLoading(true);
@@ -39,16 +40,28 @@ export default function EmailStep({ email, setEmail, onNext }) {
 
   return (
     <form className="login-box" onSubmit={handleSubmit}>
-      <div className="welcome-text" style={{ marginBottom: "10px", fontSize: "18px" }}>이메일 인증</div>
       <div style={{ marginBottom: "15px", textAlign: "left", width: "100%", position: 'relative' }}>
         <Input 
           type="text" 
           placeholder="학교 아이디 입력" 
           value={emailId}
-          onChange={(e) => setEmailId(e.target.value.split('@')[0])}
+          // 💡 사용자가 직접 @를 입력하더라도 자동으로 잘라내어 아이디만 유지함
+          onChange={(e) => {
+            const value = e.target.value.split('@')[0];
+            setEmailId(value);
+          }}
           style={{ paddingRight: '100px' }}
         />
-        <span style={{ position: 'absolute', right: '15px', top: '40%', transform: 'translateY(-50%)', color: '#aaa', fontSize: '14px', pointerEvents: 'none' }}>
+        {/* 우측에 @gsm.hs.kr 고정 표시 */}
+        <span style={{ 
+          position: 'absolute', 
+          right: '15px', 
+          top: '30px', /* Input 높이에 맞춰 위치 조정 */
+          transform: 'translateY(-50%)', 
+          color: '#aaa', 
+          fontSize: '14px', 
+          pointerEvents: 'none' 
+        }}>
           @gsm.hs.kr
         </span>
 
@@ -58,14 +71,14 @@ export default function EmailStep({ email, setEmail, onNext }) {
             <br />
             <span 
               style={{ textDecoration: 'underline', cursor: 'pointer', color: '#ff4d4d', fontWeight: 'bold' }}
-              onClick={() => navigate('/Singup')}
+              onClick={() => navigate('/Signup')} // Signup 스펠링 주의 (Singup -> Signup)
             >
               회원가입 하러 가기
             </span>
           </div>
         )}
       </div>
-      <button type="submit" disabled={isLoading}>
+      <button type="submit" disabled={isLoading} className="submit-btn">
         {isLoading ? "발송 중..." : "인증번호 받기"}
       </button>
     </form>
