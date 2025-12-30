@@ -26,13 +26,12 @@ export default function MyPage() {
     return `${h} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
   };
 
-  // ✅ 로그아웃 기능
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userEmail");
       localStorage.removeItem("my_rockMode");
-      localStorage.removeItem("userProfileImage");
+      // ✅ 로그아웃 시 이미지도 해제 (계정 키 방식으로 관리하므로 굳이 안 지워도 되지만 요청대로 제거)
       alert("로그아웃 되었습니다.");
       navigate("/"); 
     }
@@ -51,18 +50,19 @@ export default function MyPage() {
       const now = new Date();
       const todayDash = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
+      // ✅ 내 이메일 전용 키로 이미지 로드
+      const localProfileImg = localStorage.getItem(`userProfileImage_${myEmail}`);
+      
       const myInfo = userList.find(u => u.email?.trim().toLowerCase() === myEmail);
       const localRockMode = localStorage.getItem("my_rockMode");
-      const localProfileImg = localStorage.getItem("userProfileImage");
       
       let currentMyPublicStatus = true;
-      let myCurrentImg = defaultProfile;
+      let myCurrentImg = localProfileImg || defaultProfile; // 내 프사는 로컬에서 가져옴
 
       if (myInfo) {
         setUserName(myInfo.username || "사용자");
         currentMyPublicStatus = localRockMode !== null ? localRockMode === "true" : true;
         setIsPublic(currentMyPublicStatus);
-        myCurrentImg = myInfo.profileImage || localProfileImg || defaultProfile;
         setProfileImage(myCurrentImg);
       }
 
@@ -89,10 +89,13 @@ export default function MyPage() {
                 const existing = rankingMap.get(rEmail);
                 rankingMap.set(rEmail, { ...existing, totalSeconds: existing.totalSeconds + seconds });
               } else {
+                // ✅ 핵심 요구사항: 나만 내 사진 보이고, 타인은 무조건 기본프사
+                const displayImg = (rEmail === myEmail) ? myCurrentImg : defaultProfile;
+                
                 rankingMap.set(rEmail, { 
                   username: userDetail.username || "익명", 
                   totalSeconds: seconds,
-                  userImg: userDetail.email === myEmail ? myCurrentImg : (userDetail.profileImageUrl || defaultProfile)
+                  userImg: displayImg
                 });
               }
             }
@@ -132,7 +135,7 @@ export default function MyPage() {
           nickname: myInfo?.username || "사용자",
           time: formatTime(totalSec),
           date: date.replace(/-/g, '.'),
-          profileImage: myCurrentImg,
+          profileImage: myCurrentImg, // ✅ 내 누적기록은 내 사진 사용
           rawDate: new Date(date)
         }))
         .sort((a, b) => b.rawDate - a.rawDate);
@@ -182,7 +185,6 @@ export default function MyPage() {
             <img src={profileImage || defaultProfile} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
           </div>
           <div className="profile-info-side">
-            {/* ⭐ 이름 옆에 로그아웃 버튼 배치 */}
             <div className="user-info-header">
               <span className="user-name">{userName}</span> 
               <button className="logout-small-btn" onClick={handleLogout}>로그아웃</button>
